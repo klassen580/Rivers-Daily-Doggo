@@ -425,6 +425,15 @@ textarea[hidden]{display:none}
 .bdaybar b{font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:30px;color:var(--accent)}.bdaybar .cake{font-size:30px}
 body[data-view=art] .ears,body[data-view=art] .dateline,body[data-view=art] .edition{display:none}
 body[data-view=art] h1{font-size:clamp(30px,5vw,54px);margin:8px 0 0}
+.flash{position:absolute;inset:0;background:#fff;z-index:5;pointer-events:none;animation:flash .6s ease-out forwards}
+@keyframes flash{0%{opacity:.95}100%{opacity:0}}
+.album2{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:26px 20px;padding:10px 4px 20px}
+.polaroid{display:grid;gap:8px;background:#fff!important;padding:10px 10px 14px;border:1px solid #d9d2c3;border-radius:2px;box-shadow:0 6px 14px rgba(0,0,0,.25);transform:rotate(var(--r,0deg));min-height:0}
+.polaroid img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#f3efe6}
+.polaroid span{font-family:'Libre Baskerville',Georgia,serif;font-style:italic;font-weight:400;font-size:14px;color:#3a3127}
+.polaroid.big{max-width:560px;margin:0 auto;transform:rotate(-1deg)}.polaroid.big img{aspect-ratio:auto;max-height:56vh;object-fit:contain;-webkit-touch-callout:default}
+.abar .filebtn{min-height:48px}
+.filebtn.go{background:var(--accent);color:#fbf4e4}
 /* make & create */
 #gbox .wrow button,#gbox .cpal .wipe{background:var(--card)!important;color:var(--ink)!important}
 #gbox .wrow button.on{background:var(--ink)!important;color:var(--paper)!important}
@@ -544,7 +553,7 @@ const today=day(new Date());
 const yest=(()=>{const d=new Date();d.setDate(d.getDate()-1);return day(d)})();
 let S={};try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
 S.favs=S.favs||[];
-S.set=Object.assign({bday:'',limit:0,feeds:true,bonus:5,voice:true},S.set||{});
+S.set=Object.assign({bday:'',limit:0,feeds:true,bonus:5,voice:true,petVoice:true},S.set||{});
 if(!S.set.bday)S.set.bday='06-15';
 if(!S.bdayFix){if(S.set.bday==='06-13')S.set.bday='06-15';S.bdayFix=1}
 // ---- fresh content every day (no repeats until a whole list has been used)
@@ -603,14 +612,24 @@ function comicOfDay(){const r=seeded(DAYN*31+5),pick=a=>a[Math.floor(r()*a.lengt
   if(r()<.3)return daily(STRIPS,2);
   return daily(CTPL,8)(pick(CTH),pick(CFR),pick(CPL))}
 
-// Chief Barker's British voice (uses the device's built-in en-GB voices)
+// Chief Barker's voice: picks the most natural-sounding English voice the device has
 let VOICE=null;
-function pickVoice(){const vs=speechSynthesis.getVoices(),gb=vs.filter(v=>/en[-_]GB/i.test(v.lang));
-  VOICE=gb.find(v=>/Daniel|Arthur|Oliver|George|Harry|Male/i.test(v.name))||gb[0]||null}
+const voiceScore=v=>{const n=(v.name+' '+(v.voiceURI||'')).toLowerCase();let s=0;
+  if(/en[-_]gb/i.test(v.lang))s+=50;else if(/^en/i.test(v.lang))s+=20;else return -1;
+  if(/premium/.test(n))s+=45;else if(/enhanced|neural|natural/.test(n))s+=35;else if(/siri/.test(n))s+=30;
+  if(/eloquence|novelty|bad news|bells|bubbles|cellos|whisper|zarvox|trinoids|albert|bahh|boing|jester|organ|superstar|wobble|grandpa|grandma|rocko|shelley|\bflo\b|\breed\b|sandy|eddy|\bfred\b|junior|ralph|kathy|good news|hysterical|deranged|pipe|princess|vicki|victoria/.test(n))return -1;
+  if(/compact/.test(n))s-=10;
+  if(/arthur|daniel|oliver|george|harry|jamie|malcolm|ryan|thomas/.test(n))s+=8;
+  if(v.localService===false)s+=5;return s};
+const englishVoices=()=>{try{return speechSynthesis.getVoices().filter(v=>voiceScore(v)>=0).sort((a,b)=>voiceScore(b)-voiceScore(a))}catch(e){return[]}};
+function pickVoice(){const vs=englishVoices();VOICE=(S.set.voiceName&&vs.find(v=>v.name===S.set.voiceName))||vs[0]||null}
 if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
-function speak(t){if(!S.set.voice||!('speechSynthesis' in window))return;
-  const clean=String(t).replace(/[\u{1F000}-\u{1FFFF}\u2600-\u27BF\uFE0F\u200D]/gu,'').replace(/\*/g,'').trim();if(!clean)return;
-  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(clean);u.lang='en-GB';if(VOICE)u.voice=VOICE;u.rate=.95;u.pitch=.85;speechSynthesis.speak(u)}catch(e){}}
+const cleanSay=t=>String(t).replace(/[\u{1F000}-\u{1FFFF}☀-➿️‍]/gu,'').replace(/\*/g,'').replace(/\s+/g,' ').trim();
+function utter(text){const u=new SpeechSynthesisUtterance(text);u.lang=VOICE?VOICE.lang:'en-GB';try{if(VOICE)u.voice=VOICE}catch(e){}u.rate=1;u.pitch=1;u.volume=1;return u}
+// speak sentence by sentence: shorter pieces sound smoother and pause naturally
+function sayQueue(parts){if(!S.set.voice||!('speechSynthesis' in window))return false;if(!VOICE)pickVoice();
+  try{speechSynthesis.cancel();parts.map(cleanSay).filter(Boolean).forEach(p=>(p.match(/[^.!?…]+[.!?…]*["”']?/g)||[p]).map(x=>x.trim()).filter(Boolean).forEach(x=>speechSynthesis.speak(utter(x))))}catch(e){}return true}
+function speak(t){sayQueue([t])}
 let saveFallback=null;
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){if(saveFallback)saveFallback()}};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1352,6 +1371,40 @@ const CATLINE={meals:['Yum, what a meal!','So tasty!','That filled my tummy!'],s
 const LIKES={dog:['burger','hotdog','chicken','cheese','egg'],cat:['sushi','fish','milk','chicken','warmmilk'],capy:['watermelon','carrot','lettuce','corn','cucumber','apple','sweetpotato']};
 let snackCat='meals';
 
+// ---- pet voices: animal sounds (WebAudio) + cute spoken lines
+let SFXAC;
+const sfxAC=()=>{try{SFXAC=SFXAC||new(window.AudioContext||window.webkitAudioContext)();if(SFXAC.state==='suspended')SFXAC.resume();return SFXAC}catch(e){return null}};
+function tone(type,f0,f1,dur,vol,delay,filt){const c=sfxAC();if(!c)return;const t=c.currentTime+(delay||0),o=c.createOscillator(),g=c.createGain(),f=c.createBiquadFilter();
+  o.type=type;o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(Math.max(30,f1),t+dur);f.type='lowpass';f.frequency.value=filt||2200;
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+Math.min(.03,dur/4));g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(f);f.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+.05)}
+function noise(dur,vol,delay,type,freq,swell){const c=sfxAC();if(!c)return;const t=c.currentTime+(delay||0),n=Math.floor(c.sampleRate*dur),b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);
+  for(let i=0;i<n;i++)d[i]=Math.random()*2-1;const s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=b;f.type=type||'lowpass';f.frequency.value=freq||800;
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+(swell?dur*.45:.01));g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  s.connect(f);f.connect(g);g.connect(c.destination);s.start(t)}
+function petSound(P,kind){if(!S.set.petVoice)return;const st=stageOf(P.fed),sp=P.species||'dog',k=[1.5,1.25,1.05,.9][st]*(P.vp||1);
+  if(kind==='eat'){[0,.16,.32].forEach(d=>noise(.07,.35,d,'highpass',2500));return}
+  if(kind==='splash'){noise(.5,.4,0,'lowpass',1400);noise(.3,.25,.25,'bandpass',2600);return}
+  if(kind==='snore'){noise(1.3,.25,0,'lowpass',380,true);noise(1.1,.18,1.5,'lowpass',260,true);return}
+  if(kind==='yawn'){tone('triangle',520*k,260*k,.9,.25,0,1500);return}
+  if(sp==='cat'){if(kind==='purr'){const c=sfxAC();if(!c)return;const t=c.currentTime,o=c.createOscillator(),l=c.createOscillator(),lg=c.createGain(),g=c.createGain();
+      o.type='sawtooth';o.frequency.value=52;l.frequency.value=24;lg.gain.value=.14;g.gain.value=.0001;l.connect(lg);lg.connect(g.gain);
+      const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=320;o.connect(f);f.connect(g);g.connect(c.destination);
+      g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.16,t+.2);g.gain.linearRampToValueAtTime(.0001,t+1.4);o.start(t);l.start(t);o.stop(t+1.5);l.stop(t+1.5);return}
+    const c=sfxAC();if(!c)return;const t=c.currentTime,o=c.createOscillator(),g=c.createGain(),f=c.createBiquadFilter(),b=620*k;
+    o.type='triangle';o.frequency.setValueAtTime(b,t);o.frequency.linearRampToValueAtTime(b*1.55,t+.22);o.frequency.linearRampToValueAtTime(b*.9,t+.6);
+    f.type='bandpass';f.frequency.value=1500*k;f.Q.value=1.2;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.4,t+.06);g.gain.exponentialRampToValueAtTime(.0001,t+.65);
+    o.connect(f);f.connect(g);g.connect(c.destination);o.start(t);o.stop(t+.7);return}
+  if(sp==='capy'){[0,.13,.26].forEach((d,i)=>tone('sine',1400*k+i*120,2100*k,.09,.25,d,5000));noise(.08,.12,.42,'bandpass',900);return}
+  const f0=780*k;tone('sawtooth',f0,f0*.4,.14,.32,0,1600);if(kind!=='one')tone('sawtooth',f0*1.08,f0*.42,.13,.28,.2,1600)}
+const PETFEM=/kate|serena|martha|samantha|karen|moira|tessa|fiona|stephanie|susan|allison|ava|zoe|nicky|victoria|catherine|libby|sonia|hazel/i;
+function petSpeak(P,text){if(!S.set.petVoice||!('speechSynthesis' in window))return;const t=cleanSay(String(text).replace(/\*[^*]*\*/g,''));if(!t||!/[a-z]/i.test(t))return;
+  const vs=englishVoices(),v=vs.find(x=>x!==VOICE&&PETFEM.test(x.name))||vs.find(x=>x!==VOICE)||VOICE,st=stageOf(P.fed),sp=P.species||'dog';
+  const pitch=Math.min(2,Math.max(.5,({dog:[1.75,1.55,1.35,1.15],cat:[1.95,1.75,1.55,1.35],capy:[1.25,1.1,.95,.8]})[sp][st]*(P.vp||1)));
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=v?v.lang:'en-GB';try{if(v)u.voice=v}catch(e){}u.pitch=pitch;u.rate=sp==='capy'?.9:1.1;speechSynthesis.speak(u)}catch(e){}}
+function petVoice(P,text,kind){if(!S.set.petVoice)return;petSound(P,kind||(P.species==='cat'&&kind!=='one'?'meow':'bark'));
+  if(kind==='snore')return;setTimeout(()=>petSpeak(P,text),kind==='eat'?520:kind==='splash'?600:420)}
+
 function adoptPage(){let coat='golden',ears='floppy',species='dog';const again=S.pets.length>0;
   const draw=()=>{main.innerHTML=`<div class="adopt box"><h2 class="hl">${again?'Adopt Another Pet!':'Adopt Your Very Own Pet!'}</h2>
     <p class="dek">${again?`${S.pets.map(p=>esc(p.name)).join(' and ')} would love a new friend.`:'Pick a puppy, a kitten or a capybara, give it a name, and look after it every day.'}</p>
@@ -1388,11 +1441,13 @@ function petPage(){
     <p class="how small">Pretend snacks for pretend pets! Real dogs, cats and capybaras need their own special pet food.</p>`}
   if(petTab==='tricks')panel=`<p class="how">Bigger pups learn more tricks!</p><div class="acts">${TRICKS.map(([k,n,need,ic])=>need>st
       ?`<button disabled>🔒 ${n}<small>at ${sname(P,need)}</small></button>`:`<button data-t="${k}">${ic} ${n}</button>`).join('')}</div>`;
-  if(petTab==='style'){const cats=[['hat','🎩 Hats'],['eyes','🕶️ Glasses'],['neck','🎀 Neck'],['body','👕 Outfits'],['feet','👟 Paws'],['looks',(P.species||'dog')==='dog'?'🐶 Coat & ears':'🎨 Coat'],['name','✏️ Name']];
+  if(petTab==='style'){const cats=[['hat','🎩 Hats'],['eyes','🕶️ Glasses'],['neck','🎀 Neck'],['body','👕 Outfits'],['feet','👟 Paws'],['looks',(P.species||'dog')==='dog'?'🐶 Coat & ears':'🎨 Coat'],['name','✏️ Name & voice']];
     let inner='';
     if(closet==='looks')inner=`<h3>Coat</h3><div class="wrow coatrow">${Object.entries(coatsFor(P.species)).map(([k,c])=>`<button data-coat="${k}" class="${P.coat===k?'on':''}"><i style="background:${c[1]}"></i>${c[0]}</button>`).join('')}</div>
       ${(P.species||'dog')!=='dog'?'':`<h3>Ears</h3><div class="wrow">${Object.entries(EARS).map(([k,e])=>`<button data-ear="${k}" class="${(P.ear||'floppy')===k?'on':''}">${e[2]}</button>`).join('')}</div>`}`;
-    else if(closet==='name')inner=`<div class="row rename"><input id="rename" maxlength="14" value="${esc(P.name)}" aria-label="Pup's name"><button id="renameBtn">Save name</button></div>`;
+    else if(closet==='name')inner=`<div class="row rename"><input id="rename" maxlength="14" value="${esc(P.name)}" aria-label="Pet's name"><button id="renameBtn">Save name</button></div>
+      <h3>Voice</h3><div class="wrow">${[[.82,'🐻 Deep'],[1,'🙂 Normal'],[1.2,'🐭 Squeaky']].map(([v,n])=>`<button data-vp="${v}" class="${(P.vp||1)===v?'on':''}">${n}</button>`).join('')}<button id="vtest">🔊 Hear me</button></div>
+      ${S.set.petVoice?'':'<p class="how small">Pet voices are switched off in the Parent corner.</p>'}`;
     else inner=`<div class="wrow">${Object.entries(WEAR[closet]).map(([v,[n]])=>`<button data-k="${closet}" data-v="${v}" class="${P.wear[closet]===v?'on':''}">${n}</button>`).join('')}</div>`;
     panel=`<div class="closet">${cats.map(([k,n])=>`<button data-cl="${k}" class="${closet===k?'on':''}">${n}</button>`).join('')}</div>${inner}
       <div class="row dressbtns"><button id="surprise" class="go">🎲 Surprise me!</button><button id="undress">Take it all off</button></div>`}
@@ -1415,17 +1470,17 @@ function petPage(){
   const svg=main.querySelector('.petbox .pet'),say=document.getElementById('psay'),root=main.querySelector('.petpage');
   applyWear(svg,P.wear.hat==='none'&&st===3?{...P.wear,hat:'crown'}:P.wear);
   if(P.asleep)svg.classList.add('asleep');
-  const talk=t=>{say.textContent=t};
+  const talk=(t,kind)=>{say.textContent=t;petVoice(P,t,kind)};
   const anim=c=>{['happy','t-sit','t-paw','t-spin','t-roll','t-dance','t-shake'].forEach(x=>svg.classList.remove(x));void svg.getBoundingClientRect();svg.classList.add(c)};
   const joy=n=>{if(Date.now()>petCool){P.happy=Math.min(100,P.happy+n);petCool=Date.now()+1500;save()}};
   const idle=()=>{clearTimeout(idleT);if(!P.asleep)idleT=setTimeout(()=>{if(view==='pet'&&!P.asleep){P.asleep=true;P.napStart=Date.now();save();render()}},60000)};
-  const sleepy=()=>{if(!P.asleep)return false;talk(`Shh… ${P.name} is sleeping. Tap Wake up first! 🤫`);return true};
+  const sleepy=()=>{if(!P.asleep)return false;talk(`Shh… ${P.name} is sleeping. Tap Wake up first! 🤫`,'snore');return true};
   const wake=()=>{const slept=Date.now()-(P.napStart||0);P.asleep=false;let msg='*yaaawn* Hi River!';
     if(slept>15000&&Date.now()-(P.napBonus||0)>3600e3){P.happy=Math.min(100,P.happy+8);P.napBonus=Date.now();msg='*yaaawn* What a great nap! I feel so happy.'}
-    save();render();const s=main.querySelector('.petbox .pet');if(s){s.classList.add('happy');document.getElementById('psay').textContent=msg}};
+    save();render();const s=main.querySelector('.petbox .pet');if(s){s.classList.add('happy');document.getElementById('psay').textContent=msg}petVoice(P,msg.replace('*yaaawn*','Yawn!'),'yawn')};
   idle();
   svg.addEventListener('click',()=>{if(P.asleep){wake();return}anim('happy');burst(...mid(svg),['❤️','💛','🐾']);joy(3);
-    talk(['Hee hee, that tickles!','More scratches please!','I love you, River!','*happy wiggle*'][rnd(4)]);idle()});
+    talk(['Hee hee, that tickles!','More scratches please!','I love you, River!','*happy wiggle*'][rnd(4)],P.species==='cat'?'purr':null);idle()});
   root.onclick=e=>{const b=e.target.closest('button');if(!b)return;idle();
     if(b.dataset.tab){petTab=b.dataset.tab;render();return}
     if(b.dataset.sc){snackCat=b.dataset.sc;render();return}
@@ -1439,24 +1494,26 @@ function petPage(){
       const ns=stageOf(P.fed),[a1,b1]=mid(b),[c1,d1]=mid(svg),fl=document.createElement('span');
       fl.className='flyfood';fl.textContent=f.e;fl.style.left=a1+'px';fl.style.top=b1+'px';document.body.appendChild(fl);
       requestAnimationFrame(()=>requestAnimationFrame(()=>{fl.style.left=c1+'px';fl.style.top=(d1-20)+'px';fl.style.transform='translate(-50%,-50%) scale(.5)'}));
-      setTimeout(()=>{fl.remove();anim(fx);burst(...mid(svg),[f.e,...chars,'😋']);talk(line)},650);
+      setTimeout(()=>{fl.remove();anim(fx);burst(...mid(svg),[f.e,...chars,'😋']);talk(line,'eat')},650);
       setTimeout(()=>{if(view!=='pet')return;render();const ps=document.getElementById('psay');if(ps)ps.textContent=line;
         if(ns>st){toast(`🎉 ${esc(P.name)} grew into a ${sname(P,ns)}!`);burst(innerWidth/2,innerHeight/2,['🎉','⭐','🐾'])}},1700);return}
-    if(b.dataset.a==='nap'){if(P.asleep)wake();else{P.asleep=true;P.napStart=Date.now();save();render()}return}
+    if(b.dataset.a==='nap'){if(P.asleep)wake();else{P.asleep=true;P.napStart=Date.now();save();render();petSound(P,'snore')}return}
     if(b.dataset.a){if(sleepy())return;const a=b.dataset.a;
       if(a==='feed'){if(S.treats<1){talk('No treats left! Pass a level to earn more. 🦴');return}
         S.treats--;P.fed++;P.happy=Math.min(100,P.happy+12);save();anim('happy');burst(...mid(svg),['🦴','😋','❤️']);
-        const ns=stageOf(P.fed);talk(['Yum yum!','Crunch crunch! Thank you!','Best treat ever!'][rnd(3)]);
+        const ns=stageOf(P.fed);talk(['Yum yum!','Crunch crunch! Thank you!','Best treat ever!'][rnd(3)],'eat');
         setTimeout(()=>{if(view!=='pet')return;render();if(ns>st){toast(`🎉 ${esc(P.name)} grew into a ${sname(P,ns)}!`+(TRICKS.some(t=>t[2]===ns)?' New trick unlocked!':''));burst(innerWidth/2,innerHeight/2,['🎉','⭐','🐾'])}},900);return}
-      if(a==='pet'){anim('happy');burst(...mid(svg),['❤️','💛','🐾']);joy(3);talk(['Hee hee, that tickles!','More scratches please!','*happy wiggle*'][rnd(3)]);return}
+      if(a==='pet'){anim('happy');burst(...mid(svg),['❤️','💛','🐾']);joy(3);talk(['Hee hee, that tickles!','More scratches please!','*happy wiggle*'][rnd(3)],P.species==='cat'?'purr':null);return}
       if(a==='ball'){const ball=document.createElement('span');ball.className='ballfx';ball.textContent='🎾';document.getElementById('petbox').appendChild(ball);
         setTimeout(()=>{ball.remove();anim('happy');talk(['Got it! Again, again!','Fetch is my favourite!','Throw it farther!'][rnd(3)])},900);joy(5);return}
-      if(a==='bath'){anim('t-shake');burst(...mid(svg),['🫧','💧','🧼','🫧']);joy(4);talk(['Splish splash!','*shake shake shake* Oops, sorry!','I smell like flowers now!'][rnd(3)]);return}}
+      if(a==='bath'){anim('t-shake');burst(...mid(svg),['🫧','💧','🧼','🫧']);joy(4);talk(['Splish splash!','*shake shake shake* Oops, sorry!','I smell like flowers now!'][rnd(3)],'splash');return}}
     if(b.dataset.t){if(sleepy())return;const t=TRICKS.find(x=>x[0]===b.dataset.t);anim('t-'+t[0]);joy(2);burst(...mid(svg),[t[3],'⭐']);
       talk({sit:'*sits* Good dog? Good dog!',paw:'High five, River! ✋',spin:'Wheee! Round and round!',roll:'Ta-da! Did you see that?',dance:'Look at my moves! 🎵'}[t[0]]);return}
     if(b.dataset.coat){P.coat=b.dataset.coat;save();render();return}
     if(b.dataset.ear){P.ear=b.dataset.ear;save();render();return}
     if(b.dataset.cl){closet=b.dataset.cl;render();return}
+    if(b.dataset.vp){P.vp=+b.dataset.vp;save();render();petVoice(P,`Hi River! I'm ${P.name}!`);return}
+    if(b.id==='vtest'){petVoice(P,`Hi River! I'm ${P.name}! I love you!`);return}
     if(b.id==='surprise'){if(sleepy())return;for(const k of Object.keys(NOWEAR)){const o=Object.keys(WEAR[k]);P.wear[k]=Math.random()<.3?'none':o[1+rnd(o.length-1)]}
       save();render();const s2=main.querySelector('.petbox .pet');s2.classList.add('t-spin');burst(...mid(s2),['✨','👗','🎩','⭐']);
       document.getElementById('psay').textContent=['Ooh, how do I look?','Fancy! I feel like a movie star!','Is this my best outfit ever?'][rnd(3)];return}
@@ -1519,7 +1576,7 @@ function setupPark(){
   const CAPYLINES=['So relaxing…','The pond is lovely today.','*happy squeak*','Very chill.','Splish splash!'];
   els.forEach(el=>el.addEventListener('click',()=>{const p=S.pets[+el.dataset.i];
     if(p.asleep){p.asleep=false;save();render();return}
-    hop(el);pbub(el,(p.species==='capy'?CAPYLINES:p.species==='cat'?['Purrr…','I found a sunny spot!','*chases a leaf*','Meow!','I am the boss of this park.']:LINES)[rnd(5)]);burst(...mid(el),['❤️','🐾'])}));
+    const ln=(p.species==='capy'?CAPYLINES:p.species==='cat'?['Purrr…','I found a sunny spot!','*chases a leaf*','Meow!','I am the boss of this park.']:LINES)[rnd(5)];hop(el);pbub(el,ln);petVoice(p,ln,el.classList.contains('swim')?'splash':null);burst(...mid(el),['❤️','🐾'])}));
   stage.closest('.petpage').onclick=e=>{const b=e.target.closest('button');if(!b)return;
     if(b.dataset.tab){petTab=b.dataset.tab;render();return}
     const a=b.dataset.pk;if(!a)return;const team=awake();
@@ -1527,7 +1584,7 @@ function setupPark(){
     if(a==='ball'){const x=15+Math.random()*50,y=10+Math.random()*14,ball=document.createElement('span');ball.className='pball';ball.textContent='🎾';
       ball.style.left=x+'%';ball.style.bottom=y+'%';stage.appendChild(ball);
       team.forEach((el,i)=>moveTo(el,x+(i-1)*6,y,false));say.textContent='Fetch! Who will get it first?';
-      setTimeout(()=>{ball.remove();const w=team[rnd(team.length)],p=S.pets[+w.dataset.i];hop(w);pbub(w,'Got it! 🎾');
+      setTimeout(()=>{ball.remove();const w=team[rnd(team.length)],p=S.pets[+w.dataset.i];hop(w);pbub(w,'Got it! 🎾');petVoice(p,'Got it!');
         say.textContent=`${p.name} got the ball!`;team.forEach(el=>{const q=S.pets[+el.dataset.i];q.happy=Math.min(100,q.happy+1)});save()},2400)}
     if(a==='bubbles'){for(let i=0;i<10;i++){const s=document.createElement('span');s.className='pbubble';s.textContent='🫧';
         s.style.left=(10+Math.random()*80)+'%';s.style.animationDelay=(i*.25)+'s';s.style.setProperty('--dx',(Math.random()*80-40)+'px');stage.appendChild(s);setTimeout(()=>s.remove(),6500)}
@@ -1542,7 +1599,7 @@ function backupHTML(){return`<h3 class="psec">Backup River's progress</h3>
   <textarea id="bkText" rows="3" placeholder="A backup code appears here. Or paste a code here to restore it."></textarea>
   <div class="rbtns left"><button id="bkPaste">Restore from code</button></div><p class="err" id="bkMsg"></p>`}
 function setupBackup(){const q=id=>document.getElementById(id),msg=t=>q('bkMsg').textContent=t;
-  const data=lite=>{const o=JSON.parse(JSON.stringify(S));if(lite){(o.letters||[]).forEach(l=>l.img='');o.stkImg={};o.items=[];o.day='';o.gallery=(o.gallery||[]).filter(g=>g.type==='colour');o.designs={}}return o};
+  const data=lite=>{const o=JSON.parse(JSON.stringify(S));if(lite){(o.letters||[]).forEach(l=>l.img='');o.stkImg={};o.items=[];o.day='';o.gallery=(o.gallery||[]).filter(g=>g.type==='colour');o.designs={};o.album=[]}return o};
   const restore=obj=>{const d=obj&&obj.data?obj.data:obj;
     if(!d||typeof d!=='object'||!('lv' in d||'pets' in d||'treats' in d||'favs' in d)){msg("That doesn't look like a River's Daily Doggo backup.");return}
     q('pconf').innerHTML=`<div class="confirm"><p><b>Restore this backup?</b> It replaces everything currently on this iPad${d.pets&&d.pets.length?` (backup has: ${d.pets.map(p=>esc(p.name)).join(', ')})`:''}.</p>
@@ -1562,9 +1619,7 @@ function setupBackup(){const q=id=>document.getElementById(id),msg=t=>q('bkMsg')
 }
 
 // ---- Chief reads today's paper aloud
-function speakAll(list){if(!S.set.voice||!('speechSynthesis' in window)){toast("Chief's voice is switched off. A grown-up can turn it on in the Parent corner.");return}
-  try{speechSynthesis.cancel();list.filter(Boolean).forEach(t=>{const c=String(t).replace(/[\u{1F000}-\u{1FFFF}☀-➿️‍]/gu,'').replace(/\*/g,'').trim();if(!c)return;
-    const u=new SpeechSynthesisUtterance(c);u.lang='en-GB';if(VOICE)u.voice=VOICE;u.rate=.95;u.pitch=.85;speechSynthesis.speak(u)})}catch(e){}}
+function speakAll(list){if(!sayQueue(list))toast("Chief's voice is switched off. A grown-up can turn it on in the Parent corner.")}
 function readPaper(btn){
   if('speechSynthesis' in window&&speechSynthesis.speaking){speechSynthesis.cancel();if(btn)btn.textContent="🔊 Chief, read me today's paper!";return}
   const h=new Date().getHours(),tod=h<12?'morning':h<17?'afternoon':'evening',[title,panels]=comicOfDay(),jk=daily(JOKES,1);
@@ -1758,6 +1813,7 @@ const hex2rgb=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h
 // keep saving even if storage fills up: drop the oldest drawings first
 saveFallback=()=>saveSafe();
 const saveSafe=()=>{for(let k=0;k<20;k++){try{localStorage.setItem(KEY,JSON.stringify(S));return true}catch(e){
+  if(S.album&&S.album.length>4){S.album.pop();toast('📷 The photo album was full, so the oldest photo was removed.');continue}
   const i=S.gallery.map(g=>!!g.img&&g.id!==S.wallArt).lastIndexOf(true);if(i<0)return false;S.gallery.splice(i,1);toast('🖼️ The gallery was full, so the oldest drawing was taken down.')}}return false};
 
 function drawPaper(c,paper,W,H){c.save();c.setTransform(1,0,0,1,0,0);c.globalAlpha=1;c.globalCompositeOperation='source-over';
@@ -1820,7 +1876,7 @@ function studio(host,o){
   const W=o.W||AW,H=o.H||AH;let tool=o.tool||'crayon',col=o.col||'#d93b2b',sz=12,sym='none',paper=o.paper||'plain',ops=[],undo=[],cur=null,drawing=false,stamp=STAMPS[0];
   const SIZES=[[6,'Thin'],[12,'Medium'],[26,'Thick'],[44,'Huge']];
   host.innerHTML=`<div class="studio"><div class="shead"><button class="abk" data-ah="${o.back||'home'}">← ${o.backLabel||'Art Studio'}</button><h2>${esc(o.title||'Free drawing')}</h2>
-      <div class="sacts"><button data-act="undo">↩️ Undo</button><button data-act="clear">🗑️ Clear</button>${o.noReplay?'':'<button data-act="replay">🎬 Replay</button>'}<button data-act="save" class="go">${o.saveLabel||'💾 Save'}</button></div></div>
+      <div class="sacts"><button data-act="undo">↩️ Undo</button><button data-act="clear">🗑️ Clear</button>${o.noReplay?'':'<button data-act="replay">🎬 Replay</button>'}<button data-act="snap">📸 Photo</button><button data-act="save" class="go">${o.saveLabel||'💾 Save'}</button></div></div>
     ${o.top?`<div class="abar">${o.top}</div>`:''}
     <div class="cwrap2" style="aspect-ratio:${W}/${H};--ar:${(W/H).toFixed(4)}"><canvas class="paper"></canvas><canvas class="ink"></canvas><div class="guide">${o.guide||''}</div></div>
     <div class="stools"><div class="trow">${BRUSHES.map(([k,n])=>{const p=n.split(' ');return`<button data-br="${k}" class="tb${k===tool?' on':''}"><span>${p[0]}</span>${p.slice(1).join(' ')}</button>`}).join('')}</div>
@@ -1864,6 +1920,7 @@ function studio(host,o){
     if(b.dataset.act==='undo'){const u=undo.pop();if(u){ictx.putImageData(u[0],0,0);ops.length=u[1]}else toast('Nothing to undo!');return}
     if(b.dataset.act==='clear'){if(!ops.length)return;snap();ictx.clearRect(0,0,W,H);ops=[];toast('🗑️ Cleared! Changed your mind? Tap ↩️ Undo.');return}
     if(b.dataset.act==='replay'){if(!ops.length)return;b.disabled=true;replayOps(ink,ops,W,H,o.clip,()=>{b.disabled=false})}
+    if(b.dataset.act==='snap'){if(!ops.length&&!o.template){toast('Draw something first, then snap a photo! 📸');return}snapPhoto(api.flat(1024,Math.round(1024*H/W)),o.title,q('.cwrap2'));return}
     if(b.dataset.act==='save'){if(!ops.length&&!o.allowEmpty){toast('Draw something first! 🖍️');return}o.onSave(api)}});
   const api={ops:()=>ops,paper:()=>paper,setGuide:h=>{q('.guide').innerHTML=h},bar:()=>q('.abar'),
     flat:(w,h,type,q2)=>{const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.drawImage(pap,0,0,w,h);x.drawImage(ink,0,0,w,h);return c.toDataURL(type||'image/jpeg',q2||.75)}};
@@ -2016,14 +2073,15 @@ function artOpen(spec){const[k,a,b]=spec.split(':');
   else if(k==='dots'){dotShape=a;artTab='dot'}else if(k==='wear'){designKind=a;designPet=+b||0;artTab='designer'}
   view='art';render();scrollTo({top:0})}
 function artPage(){const R={home:artHome,draw:artDraw,pages:artPages,colour:artColour,lessons:artLessonMenu,lesson:artLesson,dots:artDotMenu,dot:artDot,
-    design:artDesignMenu,designer:artDesigner,gallery:artGallery};
+    design:artDesignMenu,designer:artDesigner,gallery:artGallery,album:artAlbum};
   try{(R[artTab]||artHome)()}catch(e){window.__showErr&&window.__showErr('art: '+e.message)}}
 function artHome(){const tp=dailyAt(allPageIds(),9,DAYN);
   artWrap(`<h2 class="sec">River's Art Studio</h2>
     <div class="atoday box"><img src="${pageThumb(tp)}" alt=""><div><p class="kicker">Today's colouring page</p><h3>${esc(pageInfo(tp).title)}</h3><button class="go" data-ao="page:${tp}">🖍️ Colour it in!</button></div></div>
     <div class="acards">${[['draw','🖌️','Free drawing','A blank page and all the art tools'],['pages','🖍️','Colouring pages',`${allPageIds().length+petPageIds().length} pages, including your own pets`],
       ['lessons','✏️','Learn to draw','Step-by-step with dotted lines'],['dots','🔢','Dot-to-dot','Join the dots to find a mystery picture'],
-      ['design','👕','Design for my pets','A shirt or a hat they really wear'],['gallery','🖼️',"River's Gallery",`${S.gallery.length} picture${S.gallery.length===1?'':'s'} in gold frames`]]
+      ['design','👕','Design for my pets','A shirt or a hat they really wear'],['gallery','🖼️',"River's Gallery",`${S.gallery.length} picture${S.gallery.length===1?'':'s'} in gold frames`],
+      ['album','📷','Photo Album',`${S.album.length} photo${S.album.length===1?'':'s'} of your art and paper drawings`]]
       .map(([k,i,n,d])=>`<button class="acard" data-ah="${k}"><span>${i}</span><b>${n}</b><small>${d}</small></button>`).join('')}</div>`)}
 function artDraw(){studio(artWrap(),{title:'Free drawing',onSave:api=>{const ops=api.ops(),js=JSON.stringify(ops.map(o=>{const c={...o};delete c.rng;return c}));
   addToGallery({type:'draw',img:api.flat(720,540),paper:api.paper(),ops:js.length<60000?JSON.parse(js):null,title:'Free drawing'});speak(review(S.gallery[0]))}})}
@@ -2032,7 +2090,7 @@ function artPages(){const tp=dailyAt(allPageIds(),9,DAYN);const card=id=>`<butto
     ${Object.entries(SCENES).map(([k,v])=>`<h3 class="psec">${v[0]} ${v[1]}</h3><div class="apages">${Object.keys(ANIMALS).map(a=>card(k+'-'+a)).join('')}</div>`).join('')}`)}
 function artColour(){let page=S.cpage&&pageInfo(S.cpage)?S.cpage:'home-dog',col=ART_COLS[4];const hist=[];
   const w=artWrap(`<div class="studio"><div class="shead">${artBack('pages','Colouring pages')}<h2>${esc(pageInfo(page).title)}</h2>
-      <div class="sacts"><button id="cundo">↩️ Undo</button><button id="cclear">🗑️ Start over</button><button id="csave" class="go">💾 Save</button></div></div>
+      <div class="sacts"><button id="cundo">↩️ Undo</button><button id="cclear">🗑️ Start over</button><button id="csnap">📸 Photo</button><button id="csave" class="go">💾 Save</button></div></div>
     <div class="abar"><p>Pick a colour, then tap inside any shape to fill it. Try the 🌈 rainbow or ✨ glitter!</p></div>
     <div class="cwrap2 csv" style="aspect-ratio:4/3;--ar:1.3333"><svg class="csvg" viewBox="0 0 400 300">${CDEFS}${pageSVG(page)}</svg></div>
     <div class="stools"><div class="trow cols">${ART_COLS.map(c=>`<button data-col="${c}" style="background:${c}" class="sw${c===col?' on':''}" aria-label="Colour"></button>`).join('')}
@@ -2045,6 +2103,7 @@ function artColour(){let page=S.cpage&&pageInfo(S.cpage)?S.cpage:'home-dog',col=
     if(c){col=c.dataset.col;w.querySelectorAll('[data-col]').forEach(b=>b.classList.toggle('on',b===c));return}
     if(t.closest('#cundo')){const h=hist.pop();if(!h){toast('Nothing to undo!');return}fills()[h[0]]=h[1];regs()[h[0]].style.fill=h[1]||'#ffffff';save();return}
     if(t.closest('#cclear')){S.color[page]=[];hist.length=0;save();regs().forEach(r=>r.style.fill='#ffffff');return}
+    if(t.closest('#csnap')){snapPhoto(svgURI(colourSVG(page,fills())),pageInfo(page).title,w.querySelector('.cwrap2'));return}
     if(t.closest('#csave')){if(!fills().filter(Boolean).length){toast('Colour something first! 🖍️');return}
       addToGallery({type:'colour',page,fills:fills().slice(),title:pageInfo(page).title});speak(review(S.gallery[0]));return}
     const r=t.closest('.rg');if(r){const i=regs().indexOf(r);hist.push([i,fills()[i]]);r.style.fill=col;fills()[i]=col;save()}}}
@@ -2066,18 +2125,22 @@ function artLesson(){const[ln,steps]=LESSONS[lesson],name=ln.split(' ').slice(1)
 function artDotMenu(){artWrap(`${artBack()}<h2 class="sec">Dot-to-Dot</h2><p class="lede">Tap the dots in order: 1, 2, 3… What will the mystery picture be?</p>
   <div class="acards">${Object.entries(DOTS).map(([k,v],i)=>`<button class="acard" data-ao="dots:${k}"><span>${S.dots[k]?v[0]:'🔢'}</span><b>${S.dots[k]?'It was '+v[1]+'!':'Mystery picture '+(i+1)}</b><small>${v[3].length} dots</small></button>`).join('')}</div>`)}
 function artDot(){const[ic,name,fill,pts]=DOTS[dotShape];let next=1;
-  const w=artWrap(`<div class="studio"><div class="shead">${artBack('dots','Dot-to-dot')}<h2>Mystery picture</h2></div><div class="abar"><p id="dtext">Tap dot number <b>1</b> to start!</p></div>
+  const w=artWrap(`<div class="studio"><div class="shead">${artBack('dots','Dot-to-dot')}<h2>Mystery picture</h2><div class="sacts"><button id="dsnap">📸 Photo</button></div></div><div class="abar"><p id="dtext">Tap dot number <b>1</b> to start!</p></div>
     <div class="cwrap2 csv" style="aspect-ratio:4/3;--ar:1.3333"><svg class="dotsvg" viewBox="0 0 400 300"><polygon id="dfill" points="${pts.map(p=>p.join(',')).join(' ')}" fill="${fill}" opacity="0"/><polyline id="dline" points="" fill="none" stroke="#1f1a14" stroke-width="3" stroke-linejoin="round"/>
       <text id="dpic" x="200" y="165" text-anchor="middle" font-size="70" opacity="0">${ic}</text>
       ${pts.map(([x,y],i)=>`<g class="dot" data-n="${i+1}"><circle cx="${x}" cy="${y}" r="16" fill="transparent"/><circle cx="${x}" cy="${y}" r="5" fill="#1f1a14"/><text x="${x+9}" y="${y-8}" font-size="13" font-weight="700" fill="#a8321f">${i+1}</text></g>`).join('')}</svg></div></div>`);
   const line=w.querySelector('#dline'),txt=w.querySelector('#dtext'),done=[];
-  w.querySelectorAll('.dot').forEach(g=>g.addEventListener('click',()=>{const n=+g.dataset.n;
-    if(n!==next){if(next<=pts.length){g.classList.remove('nope');void g.getBoundingClientRect();g.classList.add('nope');txt.innerHTML=`Oops! Look for number <b>${next}</b>.`}return}
-    g.classList.add('hit');done.push(pts[n-1].join(','));line.setAttribute('points',done.join(' '));next++;
+  w.querySelector('#dsnap').onclick=()=>{const sv=w.querySelector('.dotsvg').outerHTML.replace('<svg','<svg xmlns="http://www.w3.org/2000/svg"');snapPhoto(svgURI(sv),next>pts.length?'Dot-to-dot: '+name:'Dot-to-dot',w.querySelector('.cwrap2'))};
+  const svg=w.querySelector('.dotsvg');
+  svg.addEventListener('click',e=>{if(next>pts.length)return;const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;
+    const m=svg.getScreenCTM();if(!m)return;const p=pt.matrixTransform(m.inverse()),[nx,ny]=pts[next-1];
+    if(Math.hypot(p.x-nx,p.y-ny)>24){let best=-1,bd=24;pts.forEach(([x,y],i)=>{const d=Math.hypot(p.x-x,p.y-y);if(d<bd){bd=d;best=i}});
+      if(best>=0){const g=w.querySelector(`.dot[data-n="${best+1}"]`);g.classList.remove('nope');void g.getBoundingClientRect();g.classList.add('nope');txt.innerHTML=`Oops! Look for number <b>${next}</b>.`}return}
+    const g=w.querySelector(`.dot[data-n="${next}"]`);g.classList.add('hit');done.push(pts[next-1].join(','));line.setAttribute('points',done.join(' '));next++;
     if(next>pts.length){done.push(pts[0].join(','));line.setAttribute('points',done.join(' '));w.querySelector('#dfill').style.opacity='1';w.querySelector('#dpic').style.opacity='1';
       txt.innerHTML=`🎉 <b>You found ${name}!</b> ${ic}`;speak(`Hooray! It's ${name}!`);burst(innerWidth/2,innerHeight/2,[ic,'⭐','🎉']);
       if(!S.dots[dotShape]){S.dots[dotShape]=1;S.treats+=1;save();toast(`🔢 You found it! +1 🦴 treat.`)}}
-    else txt.innerHTML=`Great! Now tap dot number <b>${next}</b>.`}))}
+    else txt.innerHTML=`Great! Now tap dot number <b>${next}</b>.`})}
 function artDesignMenu(){
   if(!S.pets.length){artWrap(`${artBack()}<h2 class="sec">Design for my Pets</h2><p class="lede">Adopt a pet first in <b>My pup</b>, then come back to design clothes for it!</p>`);return}
   artWrap(`${artBack()}<h2 class="sec">Design for my Pets</h2><p class="lede">Draw it, then your pet really wears it! Your designs also show up in every pet's Dress up closet.</p>
@@ -2091,6 +2154,45 @@ function artDesigner(){const v=DESIGNS[designKind],K=8,W=v[4]*K,H=v[5]*K,path=ne
     onSave:a=>{S.designs[designKind]=a.flat(Math.round(v[4]*2.5),Math.round(v[5]*2.5),'image/png');refreshCustomWear();if(P)P.wear[v[6]]=v[7];saveSafe();
       toast(`✨ ${P?esc(P.name):'Your pet'} is wearing your ${v[0].split(' ')[1].toLowerCase()}!`);speak(`Oh, how dashing! ${P?P.name:'Your pet'} looks marvellous.`);
       if(P){S.petIdx=S.pets.indexOf(P);view='pet';petTab='care';render();scrollTo({top:0})}}})}
+// ---- photo album: snapshots of River's art, plus camera photos of her paper drawings
+S.album=S.album||[];
+let snapAC;
+function shutter(){try{snapAC=snapAC||new(window.AudioContext||window.webkitAudioContext)();const c=snapAC,t=c.currentTime,len=Math.floor(c.sampleRate*.12),buf=c.createBuffer(1,len,c.sampleRate),d=buf.getChannelData(0);
+  for(let i=0;i<len;i++){const k=i/len;d[i]=(Math.random()*2-1)*(k<.15?1:Math.pow(1-k,3))*(i<len*.5||i>len*.55?1:.2)}
+  const s=c.createBufferSource(),g=c.createGain(),f=c.createBiquadFilter();f.type='highpass';f.frequency.value=1200;g.gain.value=.5;s.buffer=buf;s.connect(f);f.connect(g);g.connect(c.destination);s.start(t)}catch(e){}}
+function snapPhoto(img,title,el,src){
+  if(el){const f=document.createElement('div');f.className='flash';el.appendChild(f);setTimeout(()=>f.remove(),600)}
+  shutter();S.album.unshift({id:Date.now(),d:today,img,title:title||'My art',src:src||'snap'});S.album=S.album.slice(0,30);saveSafe();
+  toast(`📸 Snap! Saved to your Photo Album (${S.album.length} photo${S.album.length===1?'':'s'}).`)}
+function photoFromFile(file,done){const url=URL.createObjectURL(file),im=new Image();
+  im.onload=()=>{const m=1200,k=Math.min(1,m/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement('canvas');
+    c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);done(c.toDataURL('image/jpeg',.72))};
+  im.onerror=()=>{URL.revokeObjectURL(url);toast("Sorry, that photo couldn't be opened.")};im.src=url}
+async function toJpegBlob(src){const im=new Image();await new Promise((ok,no)=>{im.onload=ok;im.onerror=no;im.src=src});
+  const c=document.createElement('canvas');c.width=im.naturalWidth||1024;c.height=im.naturalHeight||768;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+  return await new Promise(r=>c.toBlob(r,'image/jpeg',.9))}
+function artAlbum(){const tilt=i=>[-2.5,1.5,-1,2.2,-1.8,1][i%6];
+  const w=artWrap(`${artBack()}<h2 class="sec">📷 River's Photo Album</h2>
+    <div class="abar"><p>Tap <b>📸 Photo</b> while you draw or colour to snap your art. Made a drawing on real paper? Take a picture of it here!</p>
+      <div class="row"><label class="filebtn go">📷 Take a photo of my paper art<input type="file" accept="image/*" capture="environment" id="camIn"></label>
+      <label class="filebtn">🖼️ Choose from iPad photos<input type="file" accept="image/*" id="picIn"></label></div></div>
+    ${S.album.length?`<div class="album2">${S.album.map((a,i)=>`<button class="polaroid" data-ph="${a.id}" style="--r:${tilt(i)}deg"><img src="${a.img}" alt=""><span>${esc(a.title)} · ${fmt(a.d)}</span></button>`).join('')}</div>`
+      :'<p class="lede">No photos yet! Snap one with the 📸 Photo button in any art screen.</p>'}`);
+  const take=inp=>inp.addEventListener('change',()=>{const f=inp.files[0];if(!f)return;photoFromFile(f,img=>{snapPhoto(img,'My paper art',null,'camera');artPage()})});
+  take(w.querySelector('#camIn'));take(w.querySelector('#picIn'));
+  w.querySelectorAll('[data-ph]').forEach(b=>b.onclick=()=>{const a=S.album.find(x=>x.id===+b.dataset.ph);if(!a)return;
+    modal(`<div class="polaroid big"><img src="${a.img}" alt="" id="phImg"><span>${esc(a.title)} · ${fmt(a.d)}</span></div>
+      <p class="how small" id="phHint"></p>
+      <div class="rbtns"><button id="phSave">📤 Save to iPad Photos</button><button id="phGal">🖼️ Add to my Gallery</button><button id="phDel">🗑️ Delete</button><button id="phClose" class="go">Close</button></div>`);
+    const m=document.getElementById('modal');m.firstElementChild.classList.add('wide');
+    m.querySelector('#phClose').onclick=closeModal;
+    m.querySelector('#phGal').onclick=()=>{addToGallery({type:'draw',img:a.img,title:a.title});closeModal()};
+    m.querySelector('#phDel').onclick=e=>{if(e.target.dataset.sure){S.album=S.album.filter(x=>x.id!==a.id);saveSafe();closeModal();artPage()}else{e.target.dataset.sure=1;e.target.textContent='Tap again to delete'}};
+    m.querySelector('#phSave').onclick=async()=>{const hint=m.querySelector('#phHint');
+      try{const blob=await toJpegBlob(a.img),file=new File([blob],'rivers-art.jpg',{type:'image/jpeg'});
+        if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:a.title});return}}catch(e){if(e&&e.name==='AbortError')return}
+      hint.textContent='Press and hold the picture above, then tap "Save to Photos" (or "Add to Photos").'}})}
+
 function artGallery(){const w=artWrap(`${artBack()}<h2 class="sec">River's Gallery</h2>${S.gallery.length?`<p class="lede">Tap a picture to look closer, replay it, or hang it in your pet's room.</p><div class="agal">${S.gallery.map(g=>
     `<button class="gframe" data-g="${g.id}"><img src="${thumbSrc(g)}" alt=""><b>${esc(g.title||'Art by River')}</b><small>${fmt(g.d)}${S.wallArt===g.id?' · 🏠 on the wall':''}</small></button>`).join('')}</div>`
     :'<p class="lede">No pictures yet! Make something and tap <b>💾 Save</b> to hang it here.</p>'}`);
@@ -2133,7 +2235,10 @@ function parentPage(){
     <label>Daily time limit<select id="plim">${[0,15,20,30,45,60,90].map(m=>opt(m,m?m+' minutes':'No limit',S.set.limit==m)).join('')}</select>
       <small>Used today: about ${used} minute${used===1?'':'s'}. When time is up, Chief Barker asks for a break.</small></label>
     <label>Bonus pups per day<select id="pbon">${[0,3,5,10].map(m=>opt(m,m||'None',S.set.bonus==m)).join('')}</select><small>Extra pups River can add from the front page.</small></label>
-    <label class="chk"><input type="checkbox" id="pvo"${S.set.voice?' checked':''}><span>Chief Barker's talking voice</span><small>He speaks in a British English accent using the iPad's built-in voices.</small></label>
+    <label class="chk"><input type="checkbox" id="pvo"${S.set.voice?' checked':''}><span>Chief Barker's talking voice</span><small>He talks using the iPad's own built-in voices.</small></label>
+    <label>Which voice Chief uses<span class="row"><select id="pvn"><option value="">✨ Best available (automatic)</option>${englishVoices().map(v=>`<option value="${esc(v.name)}"${S.set.voiceName===v.name?' selected':''}>${esc(v.name)} (${esc(v.lang)})${voiceScore(v)>=80?' ⭐':''}</option>`).join('')}</select><button id="pvt" type="button">▶ Test</button></span>
+      <small>For a much more natural voice, download a free high-quality one on the iPad: <b>Settings → Accessibility → Spoken Content → Voices → English → English (UK)</b>, pick a voice like <b>Daniel</b> or <b>Arthur</b>, and download the <b>Enhanced</b> (or Premium) version. Then reopen the app and choose it here. ⭐ marks the best-sounding voices.</small></label>
+    <label class="chk"><input type="checkbox" id="ppv"${S.set.petVoice?' checked':''}><span>Pet sounds and voices</span><small>Barks, meows, purrs, capybara squeaks and snores, and pets saying their lines out loud.</small></label>
     <label class="chk"><input type="checkbox" id="pfd"${S.set.feeds?' checked':''}><span>Show photos and videos from the internet feeds</span>
       <small>Turn off to hide the automatic dog feeds. Games, puzzles, the pup and the funny pages still work.</small></label>
   </div>
@@ -2146,6 +2251,9 @@ function parentPage(){
   q('plim').onchange=()=>{S.set.limit=+q('plim').value;save()};
   q('pbon').onchange=()=>{S.set.bonus=+q('pbon').value;save()};
   q('pvo').onchange=()=>{S.set.voice=q('pvo').checked;save();if(S.set.voice)speak('Jolly good! Hello again, River.')};
+  q('pvn').onchange=()=>{S.set.voiceName=q('pvn').value;save();pickVoice();speak("Hello River! This is Chief Barker. How do I sound?")};
+  q('pvt').onclick=()=>{const was=S.set.voice;S.set.voice=true;speak("Good morning, River! It's Chief Barker with today's news. Splendid to see you!");S.set.voice=was};
+  q('ppv').onchange=()=>{S.set.petVoice=q('ppv').checked;save()};
   q('pfd').onchange=()=>{S.set.feeds=q('pfd').checked;save();if(S.set.feeds&&!all.length)start(true).then(()=>{view='parent';render()})};
   q('ptreat').onclick=()=>{S.treats+=5;save();toast('🦴 +5 treats from a grown-up!');parentPage()};
   q('preset').onclick=()=>{q('pconf').innerHTML=`<div class="confirm"><p><b>Are you sure?</b> This clears River's levels, stickers, pup, scrapbook, letters and settings on this iPad.</p>
