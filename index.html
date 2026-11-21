@@ -362,6 +362,12 @@ textarea[hidden]{display:none}
 .filebtn input{display:none}
 #bkText{min-height:84px;font-size:13px;line-height:1.4;padding:8px;background:#fffaf0;margin:12px 0 8px;overflow-wrap:anywhere}
 @media(min-width:744px){.filebtn{min-height:60px;font-size:20px;padding:0 26px}}
+.foods{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.foods button{display:grid;justify-items:center;gap:2px;padding:10px 6px;min-height:0;font-size:15px;line-height:1.2}
+.foods button span{font-size:40px;line-height:1.1}
+.flyfood{position:fixed;z-index:50;font-size:46px;transform:translate(-50%,-50%);pointer-events:none;
+  transition:left .6s ease-in,top .6s cubic-bezier(.3,-.6,.6,1),transform .6s}
+@media(max-width:899px){.petpage>.petstage{width:min(100%,calc(46vh * 4 / 3));margin:0 auto;position:sticky;top:6px;z-index:6}}
 /* make & create */
 #gbox .wrow button,#gbox .cpal .wipe{background:var(--card)!important;color:var(--ink)!important}
 #gbox .wrow button.on{background:var(--ink)!important;color:var(--paper)!important}
@@ -1238,7 +1244,7 @@ function roomSVG(P){const dark=isNight(),sky=dark?'#26304f':'#bfe0f2';let wx='';
   <ellipse cx="140" cy="396" rx="112" ry="40" fill="#1f4e79" stroke="#1f1a14" stroke-width="3"/><ellipse cx="140" cy="400" rx="88" ry="25" fill="#3b6fb6" stroke="#1f1a14" stroke-width="2.5"/>
   <path d="M28 396 Q32 432 140 440 Q248 432 252 396 Q240 422 140 425 Q40 422 28 396 Z" fill="#163a5c" stroke="#1f1a14" stroke-width="3"/>
   <path d="M452 410 H544 L532 438 H464 Z" fill="#3b6fb6" stroke="#1f1a14" stroke-width="3"/><ellipse cx="498" cy="410" rx="46" ry="7" fill="#1f4e79" stroke="#1f1a14" stroke-width="3"/>
-  ${S.treats>0?[478,489,500,511,520,494,506].map((x,i)=>`<circle cx="${x}" cy="${i>4?403:407}" r="5" fill="#8a5a2b" stroke="#1f1a14" stroke-width="1.5"/>`).join(''):''}
+  ${P.lastFood?`<text x="498" y="414" text-anchor="middle" font-size="34">${P.lastFood}</text>`:S.treats>0?[478,489,500,511,520,494,506].map((x,i)=>`<circle cx="${x}" cy="${i>4?403:407}" r="5" fill="#8a5a2b" stroke="#1f1a14" stroke-width="1.5"/>`).join(''):''}
   <text x="498" y="431" text-anchor="middle" font-family="Playfair Display,Georgia,serif" font-weight="900" font-size="14" fill="#fbf4e4">${ini}</text>
   <rect class="dimmer" width="600" height="450" fill="#141a33"/></svg>`}
 const HOTS='<button class="hot" data-a="nap" style="left:4%;top:78%;width:40%;height:21%" aria-label="Dog bed: nap or wake up"></button>'+
@@ -1251,6 +1257,34 @@ S.pets.forEach(P=>{P.wear=Object.assign({},NOWEAR,P.wear||{});
 save();
 const TRICKS=[['sit','Sit',0,'🐾'],['paw','High five',0,'✋'],['spin','Spin',1,'🌀'],['roll','Roll over',2,'🔄'],['dance','Dance',3,'🎵']];
 let petTab='care',adopting=false,idleT,petCool=0,closet='hat';
+
+// ---- snack menu (pretend food for pretend pets)
+const FOODCATS=[['meals','🍔 Meals'],['snacks','🍟 Snacks'],['sweets','🍦 Sweets'],['drinks','🧋 Drinks'],['healthy','🥦 Healthy']];
+const FOODS=[
+ ['burger','🍔','Burger','meals'],['pizza','🍕','Pizza','meals'],['hotdog','🌭','Hot dog','meals'],['taco','🌮','Taco','meals'],['burrito','🌯','Burrito','meals'],
+ ['sushi','🍣','Sushi','meals'],['ramen','🍜','Ramen','meals'],['spaghetti','🍝','Spaghetti','meals'],['sandwich','🥪','Sandwich','meals'],['chicken','🍗','Fried chicken','meals'],
+ ['dumplings','🥟','Dumplings','meals'],['curry','🍛','Curry','meals'],['bento','🍱','Bento box','meals'],['egg','🍳','Fried egg','meals'],['poutine','🍟','Poutine','meals'],
+ ['fries','🍟','French fries','snacks'],['chips','🥔','Potato chips','snacks'],['popcorn','🍿','Popcorn','snacks'],['pretzel','🥨','Pretzel','snacks'],['waffle','🧇','Waffles','snacks'],
+ ['pancakes','🥞','Pancakes','snacks'],['croissant','🥐','Croissant','snacks'],['bagel','🥯','Bagel','snacks'],['cheese','🧀','Cheese','snacks'],['ricecracker','🍘','Rice cracker','snacks'],
+ ['icecream','🍦','Ice cream','sweets'],['sundae','🍨','Sundae','sweets'],['donut','🍩','Donut','sweets'],['cookie','🍪','Cookie','sweets'],['cupcake','🧁','Cupcake','sweets'],
+ ['cake','🎂','Birthday cake','sweets'],['cakeslice','🍰','Strawberry cake','sweets'],['pie','🥧','Pie','sweets'],['lollipop','🍭','Lollipop','sweets'],['candy','🍬','Candy','sweets'],
+ ['honey','🍯','Honey','sweets'],['maple','🍁','Maple taffy','sweets'],
+ ['bubbletea','🧋','Bubble tea','drinks'],['milkshake','🥤','Milkshake','drinks'],['juice','🧃','Juice box','drinks'],['milk','🥛','Milk','drinks'],['smoothie','🍹','Fruit smoothie','drinks'],
+ ['lemonade','🍋','Lemonade','drinks'],['warmmilk','☕','Warm milk','drinks'],
+ ['apple','🍎','Apple','healthy'],['carrot','🥕','Carrot','healthy'],['watermelon','🍉','Watermelon','healthy'],['banana','🍌','Banana','healthy'],['broccoli','🥦','Broccoli','healthy'],
+ ['blueberries','🫐','Blueberries','healthy'],['strawberry','🍓','Strawberries','healthy'],['corn','🌽','Corn','healthy'],['lettuce','🥬','Lettuce','healthy'],['cucumber','🥒','Cucumber','healthy'],
+ ['fish','🐟','Fish','healthy'],['sweetpotato','🍠','Sweet potato','healthy']].map(([id,e,n,c])=>({id,e,n,c}));
+const FOODLINE={icecream:['Brain freeze! 🥶','t-shake',['🥶','❄️']],sundae:['Brain freeze! But worth it! 🥶','t-shake',['🥶','🍒']],
+ bubbletea:['Boba bubbles! Slurp! 🫧','happy',['🫧','🫧']],taco:['Ooh, spicy! 🔥🔥','t-shake',['🔥','🌶️']],burrito:['Spicy and yummy! 🔥','t-shake',['🔥']],curry:['Whoa, spicy! Water please! 🔥','t-shake',['🔥','💧']],
+ pizza:['Mmm, so cheesy!','happy',['🧀']],sushi:['Yum, fishy and fancy!','happy',['🍣','✨']],cake:['Is it someone\'s birthday? Party! 🎉','t-dance',['🎉','🎈']],
+ broccoli:['Hmm… broccoli? …Actually, it\'s tasty!','t-sit',['🥦']],maple:['Sweet like Canada! 🍁','t-spin',['🍁']],poutine:['Poutine! Very Canadian. Very yummy.','happy',['🍟','🍁']],
+ hotdog:['A hot dog for a hot dog!','happy',['🌭']],popcorn:['Pop pop pop!','t-spin',['🍿']],lemonade:['Sour! 😝 …Okay, it\'s good.','t-shake',['🍋']],honey:['Sticky sweet! Buzz buzz!','happy',['🐝','🍯']],
+ milk:['Milk moustache! 🥛','happy',['🥛']],sweetpotato:['Sweet potato? Sweet!','happy',['🍠']]};
+const CATLINE={meals:['Yum, what a meal!','So tasty!','That filled my tummy!'],snacks:['Crunch crunch!','Snack time is the best time!','Nom nom nom!'],
+ sweets:['Sugar rush! Zoomies!','Sweet and yummy!','Can I have another one?'],drinks:['Slurp slurp!','So refreshing!','Ahh, that hit the spot!'],
+ healthy:['Healthy and yummy! I feel strong! 💪','Crunchy and good for me!','I am growing big and strong!']};
+const LIKES={dog:['burger','hotdog','chicken','cheese','egg'],cat:['sushi','fish','milk','chicken','warmmilk'],capy:['watermelon','carrot','lettuce','corn','cucumber','apple','sweetpotato']};
+let snackCat='meals';
 
 function adoptPage(){let coat='golden',ears='floppy',species='dog';const again=S.pets.length>0;
   const draw=()=>{main.innerHTML=`<div class="adopt box"><h2 class="hl">${again?'Adopt Another Pet!':'Adopt Your Very Own Pet!'}</h2>
@@ -1277,10 +1311,15 @@ function petPage(){
   const P=S.pets[S.petIdx],st=stageOf(P.fed),next=STAGES[st+1],prev=STAGES[st][0];
   const pct=next?Math.round((P.fed-prev)/(next[0]-prev)*100):100,hearts=Math.max(1,Math.round(P.happy/20));
   const line=P.asleep?`Zzz… ${esc(P.name)} is fast asleep. Tap to wake up gently.`:P.happy>80?'I love you, River! 💛':P.happy>55?'Wanna play with me?':P.happy>30?"I'm a little bit hungry…":'I missed you! Can I have a treat?';
-  const tabs=[['care','Care'],['tricks','Tricks'],['style','👗 Dress up'],['park','🌳 Park'],['family',`Family (${S.pets.length})`]];
+  const tabs=[['care','Care'],['snacks','🍔 Snacks'],['tricks','Tricks'],['style','👗 Dress up'],['park','🌳 Park'],['family',`Family (${S.pets.length})`]];
   let panel='';
   if(petTab==='care')panel=`<div class="acts"><button data-a="feed" class="go">🦴 Feed a treat</button><button data-a="pet">🤚 Pet</button>
     <button data-a="ball">🎾 Play ball</button><button data-a="bath">🛁 Bath time</button><button data-a="nap">${P.asleep?'☀️ Wake up':'😴 Nap time'}</button></div>`;
+  if(petTab==='snacks'){const fav=P.favFound&&FOODS.find(f=>f.id===P.fav);
+    panel=`<p class="how">${fav?`⭐ ${esc(P.name)}'s favourite food: <b>${fav.e} ${fav.n}</b>.`:`Can you find ${esc(P.name)}'s secret favourite food?`} Each snack costs 1 🦴 treat. Healthy food helps pets grow twice as fast!</p>
+    <div class="closet">${FOODCATS.map(([k,n])=>`<button data-sc="${k}" class="${snackCat===k?'on':''}">${n}</button>`).join('')}</div>
+    <div class="foods">${FOODS.filter(f=>f.c===snackCat).map(f=>`<button data-food="${f.id}"><span>${f.e}</span>${f.n}</button>`).join('')}</div>
+    <p class="how small">Pretend snacks for pretend pets! Real dogs, cats and capybaras need their own special pet food.</p>`}
   if(petTab==='tricks')panel=`<p class="how">Bigger pups learn more tricks!</p><div class="acts">${TRICKS.map(([k,n,need,ic])=>need>st
       ?`<button disabled>🔒 ${n}<small>at ${sname(P,need)}</small></button>`:`<button data-t="${k}">${ic} ${n}</button>`).join('')}</div>`;
   if(petTab==='style'){const cats=[['hat','🎩 Hats'],['eyes','🕶️ Glasses'],['neck','🎀 Neck'],['body','👕 Outfits'],['feet','👟 Paws'],['looks',(P.species||'dog')==='dog'?'🐶 Coat & ears':'🎨 Coat'],['name','✏️ Name']];
@@ -1323,6 +1362,20 @@ function petPage(){
     talk(['Hee hee, that tickles!','More scratches please!','I love you, River!','*happy wiggle*'][rnd(4)]);idle()});
   root.onclick=e=>{const b=e.target.closest('button');if(!b)return;idle();
     if(b.dataset.tab){petTab=b.dataset.tab;render();return}
+    if(b.dataset.sc){snackCat=b.dataset.sc;render();return}
+    if(b.dataset.food){if(sleepy())return;if(S.treats<1){talk('No treats left! Pass a level to earn more. 🦴');return}
+      const f=FOODS.find(x=>x.id===b.dataset.food);S.treats--;P.fed+=f.c==='healthy'?2:1;
+      if(!P.fav)P.fav=FOODS[rnd(FOODS.length)].id;
+      let [line,fx,chars]=FOODLINE[f.id]||[CATLINE[f.c][rnd(3)],f.c==='sweets'?'t-spin':'happy',[]],joyN=f.c==='sweets'?14:10;
+      if(LIKES[P.species||'dog'].includes(f.id)){joyN+=5;line='Mmm, my kind of food! '+line}
+      if(f.id===P.fav){joyN+=20;line=`${f.e} MY FAVOURITE!!! 😍`;fx='t-dance';chars=['😍','❤️','⭐'];if(!P.favFound){P.favFound=true;setTimeout(()=>toast(`⭐ You found ${esc(P.name)}'s favourite food: ${f.e} ${f.n}!`),700)}}
+      P.happy=Math.min(100,P.happy+joyN);P.lastFood=f.e;save();
+      const ns=stageOf(P.fed),[a1,b1]=mid(b),[c1,d1]=mid(svg),fl=document.createElement('span');
+      fl.className='flyfood';fl.textContent=f.e;fl.style.left=a1+'px';fl.style.top=b1+'px';document.body.appendChild(fl);
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{fl.style.left=c1+'px';fl.style.top=(d1-20)+'px';fl.style.transform='translate(-50%,-50%) scale(.5)'}));
+      setTimeout(()=>{fl.remove();anim(fx);burst(...mid(svg),[f.e,...chars,'😋']);talk(line)},650);
+      setTimeout(()=>{if(view!=='pet')return;render();const ps=document.getElementById('psay');if(ps)ps.textContent=line;
+        if(ns>st){toast(`🎉 ${esc(P.name)} grew into a ${sname(P,ns)}!`);burst(innerWidth/2,innerHeight/2,['🎉','⭐','🐾'])}},1700);return}
     if(b.dataset.a==='nap'){if(P.asleep)wake();else{P.asleep=true;P.napStart=Date.now();save();render()}return}
     if(b.dataset.a){if(sleepy())return;const a=b.dataset.a;
       if(a==='feed'){if(S.treats<1){talk('No treats left! Pass a level to earn more. 🦴');return}
