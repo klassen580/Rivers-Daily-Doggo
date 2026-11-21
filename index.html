@@ -472,7 +472,8 @@ select{font:inherit;font-size:18px;min-height:48px;border:2px solid var(--ink);b
 <div class="modal" id="modal" hidden></div>
 
 <script>
-{
+(function(){
+
 const KEY='daily-doggo-v1', BONUS_MAX=5;
 const day=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const today=day(new Date());
@@ -1675,7 +1676,8 @@ async function start(force){
   if(view==='today')render();
 }
 start(false);
-}
+
+})();
 </script>
 </body>
 </html>
