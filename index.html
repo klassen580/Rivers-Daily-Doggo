@@ -467,6 +467,61 @@ body[data-view=art] h1{font-size:clamp(30px,5vw,54px);margin:8px 0 0}
 .ttt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-width:420px;aspect-ratio:1}
 #gbox .ttt button{aspect-ratio:1;font-size:clamp(40px,10vw,70px);background:#fffaf0!important;color:var(--ink)!important;padding:0}
 @media(min-width:744px){.slots span{width:64px;height:74px;font-size:48px}#gbox .tiles button{width:74px;height:74px;font-size:38px}}
+
+/* next level: missions, chest, reporter, serial, growing up, training */
+.dog.t-jump{animation:tjump .9s ease}@keyframes tjump{30%{transform:translateY(-22%) scaleY(1.05)}55%{transform:translateY(0) scaleY(.92)}75%{transform:translateY(-6%)}}
+.dog.t-beg{animation:tbeg 1.1s ease}@keyframes tbeg{25%,75%{transform:translateY(-8%) scaleY(1.08) rotate(-3deg)}50%{transform:translateY(-8%) scaleY(1.08) rotate(3deg)}}
+.dog.t-bow{animation:tbow 1.1s ease}@keyframes tbow{35%,70%{transform:rotate(14deg) translateY(6%) scaleY(.92)}}
+.dog.t-dead{animation:tdead 1.8s ease}@keyframes tdead{20%,75%{transform:rotate(90deg) translate(10%,-10%)}}
+.missions{margin:0 0 22px}.missions ul{list-style:none;margin:0;padding:0}
+.missions li{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--muted);font-size:18px}
+.missions li .mt{flex:1}.missions li.done .mt{text-decoration:line-through;color:var(--muted)}.mchk{font-size:22px}
+.missions li button{min-height:40px;padding:0 16px}
+.week{margin-top:12px;text-align:center}.week p{margin:8px 0 0;font-size:15px;color:var(--muted)}
+.wslots{display:flex;justify-content:center;gap:6px}.wslot{display:flex;flex-direction:column;align-items:center;width:44px}
+.wslot i{font-style:normal;width:38px;height:38px;border-radius:50%;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:19px;background:#fffaf0}
+.wslot.got i{background:#f6e3a1}.wslot.now i{box-shadow:0 0 0 3px var(--accent)}.wslot.sun i{border-radius:8px;background:#f3d6c8}.wslot small{font-weight:700;font-size:12px;margin-top:2px}
+.chestbtn{background:none;border:none;box-shadow:none;padding:0;min-height:0;display:block;margin:6px auto;width:210px;cursor:pointer}
+.chest{width:100%;display:block}.chest .lid{transform-origin:30px 80px;transition:transform .6s cubic-bezier(.3,1.6,.6,1)}.chest .cglow{opacity:0;transition:opacity .6s}
+.chestbtn:not(.open) .chest{animation:wob 1.4s ease-in-out infinite}@keyframes wob{0%,100%{transform:rotate(0)}10%{transform:rotate(-4deg)}20%{transform:rotate(4deg)}30%{transform:rotate(0)}}
+.chestbtn.open .lid{transform:rotate(-38deg) translateY(-6px)}.chestbtn.open .cglow{opacity:1}
+.loot{list-style:none;padding:0;margin:8px 0;font-size:19px}.loot li{padding:6px 0}
+.scoop{border:3px double var(--ink);background:#fffaf0;margin-bottom:22px;padding:18px 20px}.scoop .hl{font-size:clamp(30px,5vw,46px);text-align:center;margin:6px 0}
+.byline{text-align:center;font-style:italic;margin:0 0 12px;border-bottom:1px solid var(--ink);padding-bottom:10px}
+.scoopimg img{display:block;width:100%;max-height:440px;object-fit:contain;background:#fff;border:2px solid var(--ink)}
+.scooptext{font-size:20px;line-height:1.55;margin-top:12px;max-width:760px}.scooptext p{margin:0 0 10px}
+.scooptext p:first-child:first-letter{float:left;font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:56px;line-height:.85;margin:4px 8px 0 0}
+.chiefnote{background:var(--soft);padding:10px 12px;border-left:4px solid var(--accent);font-size:16px}.chiefnote span{font-style:italic}
+.serialbox .q,.repbox .q{font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:22px;margin:4px 0}
+.reporter .repdesk{max-width:820px;margin:0 auto}.rl{display:block;margin:12px 0 4px}.rl>span{display:block;font-weight:900;font-size:19px;margin-bottom:6px}
+.rl input,.rl textarea{width:100%;font:inherit;font-size:20px;border:2px solid var(--ink);padding:10px;background:#fffaf0}.rl textarea{min-height:180px;line-height:1.5}
+.ideas{margin:6px 0 0}.ideas button{min-height:38px;padding:0 14px;font-size:15px}
+.rpics{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 10px}.rpics button{width:104px;height:84px;padding:3px;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:26px}
+.rpics button img{width:100%;height:100%;object-fit:cover;background:#fff}.rpics button small{font-size:12px}.rpics button.on{outline:4px solid var(--accent);outline-offset:1px}
+.mystories{display:grid;gap:12px;max-width:820px;margin:0 auto}.mystories summary{cursor:pointer;display:flex;flex-direction:column;gap:2px;font-size:19px}
+.mystories summary small{color:var(--muted);font-size:14px}.mystories img{max-width:100%;max-height:300px;display:block;margin:10px 0;border:2px solid var(--ink)}
+.storypage .sthead{text-align:center;background:linear-gradient(#e9f2f8,#f8f1e1)}.stcast{display:flex;align-items:flex-end;justify-content:center;gap:6px}
+.spet .dog{width:130px;height:130px}.sscene{font-size:54px;margin:0 6px 18px}.sscene.big{font-size:90px;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}.chips button{min-height:40px;padding:0 14px;font-size:16px}.chips button.on{background:var(--ink);color:#fbf4e4}
+.stbody{margin-top:18px;font-size:21px;line-height:1.6;max-width:820px;margin-left:auto;margin-right:auto}.stbody p{margin:0 0 14px}
+.stbody p.drop:first-letter{float:left;font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:64px;line-height:.85;margin:6px 10px 0 0}
+.stq{border-top:2px solid var(--ink);margin-top:16px;padding-top:12px}.stq h3{font-family:'Playfair Display',Georgia,serif;font-size:24px;margin:0 0 12px;text-align:center}
+.schoices{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.schoices button{min-height:70px;font-size:20px;padding:10px}
+.picked{text-align:center;color:var(--muted)}.outcome{background:#fffaf0;border:2px solid var(--ink);padding:12px 14px}.tease{font-style:italic;text-align:center;font-weight:700}
+.tricklist{display:grid;gap:8px}.trick{display:flex;align-items:center;gap:10px;background:#fffaf0;border:1px solid var(--ink);padding:6px 10px}
+.trick .ti{font-size:24px;width:30px;text-align:center}.trick b{flex:1;font-size:18px}.tstars{font-size:15px;letter-spacing:1px}.trick button{min-height:40px;padding:0 14px;font-size:15px}
+.trick.known{background:#eef4e2}
+.growrow{display:flex;align-items:flex-end;justify-content:center;gap:2px;flex-wrap:nowrap}.garrow{font-size:16px;margin-bottom:60px;color:var(--muted)}
+.gstage{display:flex;flex-direction:column;align-items:center;width:22%;min-width:0;text-align:center;padding:6px;border:1px dashed var(--muted);background:#fffaf0}
+.gstage.now{border:2px solid var(--accent)}.gstage:not(.got){opacity:.6}.gstage b{font-size:15px}.gstage small{font-size:12px;color:var(--muted)}
+.gpet{height:110px;display:flex;align-items:flex-end;justify-content:center}.gpet .dog{width:calc(104px * var(--gs));height:calc(104px * var(--gs))}
+.gq{font-size:40px;font-weight:900;color:var(--muted);margin-bottom:30px}
+.trainpet{display:flex;justify-content:center}.trainpet .dog{width:170px;height:170px}
+.tbar{position:relative;height:42px;border:3px solid var(--ink);background:#f3d6c8;margin:10px 4px;border-radius:21px;overflow:visible}
+.tzone{position:absolute;top:0;bottom:0;background:#8bc34a!important;border-left:2px solid var(--ink);border-right:2px solid var(--ink)}
+.tmark{position:absolute;top:50%;transform:translate(-50%,-50%);font-size:30px;font-style:normal;pointer-events:none}
+.tscore{font-size:20px;font-weight:700;min-height:1.4em;margin:6px 0 0}
+@media(max-width:600px){.growrow{flex-wrap:wrap}.gstage{width:46%}.garrow{display:none}}@media(max-width:700px){.scooptext{columns:1}}
 /* illustrated look */
 .vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .hero{position:relative;margin:10px 0 6px;border:3px solid var(--ink);border-radius:6px;box-shadow:4px 4px 0 var(--ink);overflow:hidden;background:#3a2a1c}
@@ -804,6 +859,8 @@ function renderView(){
   if(view==='album'){albumPage();return}
   if(view==='parent'){parentPage();return}
   if(view==='art'){artPage();return}
+  if(view==='story'){storyPage();return}
+  if(view==='reporter'){reporterPage();return}
   const left=S.set.bonus-S.bonus.length;bonusBtn.disabled=left<=0;
   bonusBtn.textContent=left>0?`Extra! Bonus pup (${left} left)`:'No more extras today';
   if(view==='favs'){
@@ -816,8 +873,9 @@ function renderView(){
     else if(!all.length)lead=leadArt('Delivery Delayed!','The paper dogs are napping 💤 Check the internet connection, then tap Try again.')+'<p class="center"><button id="retry">Try again</button></p>';
     else lead=card(all[0],true)+(all.length>1?`<h2 class="sec">More Pup News</h2><div class="news">${all.slice(1).map(it=>card(it)).join('')}</div>`:'')+
       (S.bonus.length?`<h2 class="sec">Extra! Extra! Bonus Pups</h2><div class="news">${S.bonus.map(it=>card(it)).join('')}</div>`:'');
-    let extras='';try{extras=funnyPages()+artFront()+lettersHTML()}catch(e){window.__showErr&&window.__showErr('front page: '+e.message)}
-    main.innerHTML=`<div class="readbar"><button id="readPaper" class="sayit">🔊 Chief, read me today's paper!</button></div>`+bdayBar()+lead+extras;
+    let extras='',top='';try{extras=newsroomHTML()+funnyPages()+artFront()+lettersHTML()}catch(e){window.__showErr&&window.__showErr('front page: '+e.message)}
+    try{top=missionsHTML()+scoopHTML()}catch(e){window.__showErr&&window.__showErr('missions: '+e.message)}
+    main.innerHTML=`<div class="readbar"><button id="readPaper" class="sayit">🔊 Chief, read me today's paper!</button></div>`+bdayBar()+top+lead+extras;
     try{setupLetters()}catch(e){window.__showErr&&window.__showErr('letters: '+e.message)}
   }
   main.querySelectorAll('.card img').forEach(im=>im.onerror=()=>im.closest('.card').remove());
@@ -832,7 +890,7 @@ main.addEventListener('click',e=>{
   if(b.dataset.game==='art'){endGame();artGo('home');return}
   if(b.dataset.game){openGame(b.dataset.game);return}
   if(b.id==='gback'){endGame();gamesMenu();return}
-  if(b.classList.contains('reveal')){const w=b.parentElement;w.classList.add('open');speak(w.querySelector('.q').textContent+' … '+w.querySelector('.a').textContent);return}
+  if(b.classList.contains('reveal')){const w=b.parentElement;w.classList.add('open');mission('joke');speak(w.querySelector('.q').textContent+' … '+w.querySelector('.a').textContent);return}
   if(b.dataset.say){speak(b.dataset.say);return}
   if(b.id==='readPaper'){readPaper(b);return}
   if(b.classList.contains('sound')){const v=b.parentElement.querySelector('video');v.muted=!v.muted;
@@ -1123,7 +1181,7 @@ function play(g,n){
   endGame();const box=document.getElementById('gbox'),L=g.levels[n-1];let ended=false,ft,stop;
   const finish=(passed,msg)=>{if(ended)return;ended=true;
     let reward='';
-    if(passed){const first=n>=(S.lv[g.id]||1);S.lv[g.id]=Math.max(S.lv[g.id]||1,n+1);
+    if(passed){mission('level');const first=n>=(S.lv[g.id]||1);S.lv[g.id]=Math.max(S.lv[g.id]||1,n+1);
       if(first){S.treats+=3;const st=awardSticker();reward='+3 🦴 treats for your pup'+(st?` · New sticker: <b>${st}</b>!`:'')}
       else{S.treats+=1;reward='+1 🦴 treat for your pup'}save()}
     ft=setTimeout(()=>{if(stop)stop();stopGame=null;
@@ -1446,7 +1504,7 @@ S.pets.forEach(P=>{P.wear=Object.assign({},NOWEAR,P.wear||{});
   if(P.seen!==today){const d=Math.max(0,Math.round((new Date(today)-new Date(P.seen))/864e5));P.happy=Math.max(10,P.happy-12*d);P.seen=today}
   if(isNight()&&!P.asleep){P.asleep=true;P.napStart=Date.now()}});
 save();
-const TRICKS=[['sit','Sit',0,'🐾'],['paw','High five',0,'✋'],['spin','Spin',1,'🌀'],['roll','Roll over',2,'🔄'],['dance','Dance',3,'🎵']];
+const TRICKS=[['sit','Sit',0,'🐾'],['paw','High five',0,'✋'],['jump','Jump',1,'⬆️'],['spin','Spin',1,'🌀'],['beg','Sit pretty',1,'🙏'],['roll','Roll over',2,'🔄'],['bow','Take a bow',2,'🎩'],['dance','Dance',3,'🎵'],['dead','Play dead',3,'💤']];
 let petTab='care',adopting=false,idleT,petCool=0,closet='hat';
 
 // ---- snack menu (pretend food for pretend pets)
@@ -1533,10 +1591,10 @@ function adoptPage(){let coat='golden',ears='floppy',species='dog';const again=S
 function petPage(){
   clearTimeout(idleT);clearInterval(parkTimer);
   if(!S.pets.length||adopting){adoptPage();return}
-  const P=S.pets[S.petIdx],st=stageOf(P.fed),next=STAGES[st+1],prev=STAGES[st][0];
+  const P=S.pets[S.petIdx];growSync(P);const st=stageOf(P.fed),next=STAGES[st+1],prev=STAGES[st][0];
   const pct=next?Math.round((P.fed-prev)/(next[0]-prev)*100):100,hearts=Math.max(1,Math.round(P.happy/20));
   const line=P.asleep?`Zzz… ${esc(P.name)} is fast asleep. Tap to wake up gently.`:P.happy>80?'I love you, River! 💛':P.happy>55?'Wanna play with me?':P.happy>30?"I'm a little bit hungry…":'I missed you! Can I have a treat?';
-  const tabs=[['care','Care'],['snacks','🍔 Snacks'],['tricks','Tricks'],['style','👗 Dress up'],['park','🌳 Park'],['family',`Family (${S.pets.length})`]];
+  const tabs=[['care','Care'],['snacks','🍔 Snacks'],['tricks','🎓 Tricks'],['grow','📏 Growing up'],['style','👗 Dress up'],['park','🌳 Park'],['family',`Family (${S.pets.length})`]];
   let panel='';
   if(petTab==='care')panel=`<div class="acts"><button data-a="feed" class="go">🦴 Feed a treat</button><button data-a="pet">🤚 Pet</button>
     <button data-a="ball">🎾 Play ball</button><button data-a="bath">🛁 Bath time</button><button data-a="nap">${P.asleep?'☀️ Wake up':'😴 Nap time'}</button></div>`;
@@ -1545,8 +1603,8 @@ function petPage(){
     <div class="closet">${FOODCATS.map(([k,n])=>`<button data-sc="${k}" class="${snackCat===k?'on':''}">${n}</button>`).join('')}</div>
     <div class="foods">${FOODS.filter(f=>f.c===snackCat).map(f=>`<button data-food="${f.id}"><span>${f.e}</span>${f.n}</button>`).join('')}</div>
     <p class="how small">Pretend snacks for pretend pets! Real dogs, cats and capybaras need their own special pet food.</p>`}
-  if(petTab==='tricks')panel=`<p class="how">Bigger pups learn more tricks!</p><div class="acts">${TRICKS.map(([k,n,need,ic])=>need>st
-      ?`<button disabled>🔒 ${n}<small>at ${sname(P,need)}</small></button>`:`<button data-t="${k}">${ic} ${n}</button>`).join('')}</div>`;
+  if(petTab==='tricks')panel=tricksPanel(P,st);
+  if(petTab==='grow')panel=growPanel(P,st);
   if(petTab==='style'){const cats=[['hat','🎩 Hats'],['eyes','🕶️ Glasses'],['neck','🎀 Neck'],['body','👕 Outfits'],['feet','👟 Paws'],['looks',(P.species||'dog')==='dog'?'🐶 Coat & ears':'🎨 Coat'],['name','✏️ Name & voice']];
     let inner='';
     if(closet==='looks')inner=`<h3>Coat</h3><div class="wrow coatrow">${Object.entries(coatsFor(P.species)).map(([k,c])=>`<button data-coat="${k}" class="${P.coat===k?'on':''}"><i style="background:${c[1]}"></i>${c[0]}</button>`).join('')}</div>
@@ -1554,18 +1612,18 @@ function petPage(){
     else if(closet==='name')inner=`<div class="row rename"><input id="rename" maxlength="14" value="${esc(P.name)}" aria-label="Pet's name"><button id="renameBtn">Save name</button></div>
       <h3>Voice</h3><div class="wrow">${[[.82,'🐻 Deep'],[1,'🙂 Normal'],[1.2,'🐭 Squeaky']].map(([v,n])=>`<button data-vp="${v}" class="${(P.vp||1)===v?'on':''}">${n}</button>`).join('')}<button id="vtest">🔊 Hear me</button></div>
       ${S.set.petVoice?'':'<p class="how small">Pet voices are switched off in the Parent corner.</p>'}`;
-    else inner=`<div class="wrow">${Object.entries(WEAR[closet]).map(([v,[n]])=>`<button data-k="${closet}" data-v="${v}" class="${P.wear[closet]===v?'on':''}">${n}</button>`).join('')}</div>`;
+    else inner=`<div class="wrow">${Object.entries(WEAR[closet]).filter(([v])=>ownsWear(closet,v)).map(([v,[n]])=>`<button data-k="${closet}" data-v="${v}" class="${P.wear[closet]===v?'on':''}">${n}</button>`).join('')}</div>`;
     panel=`<div class="closet">${cats.map(([k,n])=>`<button data-cl="${k}" class="${closet===k?'on':''}">${n}</button>`).join('')}</div>${inner}
       <div class="row dressbtns"><button id="surprise" class="go">🎲 Surprise me!</button><button id="undress">Take it all off</button></div>`}
   if(petTab==='park')panel=`<p class="how">All your pets are playing together! Tap a pet to say hi${S.pets.some(p=>p.species==='capy')?', and watch the capybaras swim in the pond':''}.</p>
-    <div class="acts"><button data-pk="ball" class="go">🎾 Throw a ball</button><button data-pk="bubbles">🫧 Blow bubbles</button><button data-pk="call">📣 Call everyone</button></div>`;
+    <div class="acts"><button data-pk="ball" class="go">🎾 Throw a ball</button><button data-pk="bubbles">🫧 Blow bubbles</button><button data-pk="call">📣 Call everyone</button><button data-pk="show">⭐ Show-off time</button></div>`;
   if(petTab==='family')panel=`<div class="fam">${S.pets.map((p,i)=>`<button data-sw="${i}" class="${i===S.petIdx?'on':''}">${petSVG(p.coat,p.name[0].toUpperCase(),p.ear,p.species)}
       <b>${esc(p.name)}</b><small>${sname(p,stageOf(p.fed))}${p.asleep?' · sleeping':''}</small></button>`).join('')}
     ${S.pets.length<MAXPUPS?`<button id="adoptMore" class="newpup"><span>＋</span><b>Adopt another pet</b><small>Up to ${MAXPUPS} pets</small></button>`:''}</div>`;
   main.innerHTML=`<div class="petpage">${petTab==='park'?parkStage(S.pets.length>1?'Park time! Everybody, play nicely!':'Park time! Wheee!'):`<div class="petstage${P.asleep?' sleepy':''}">${roomSVG(P)}${HOTS}
       <div class="petbox" id="petbox" style="--s:${STAGES[st][2]}">${petSVG(P.coat,P.name[0].toUpperCase(),P.ear,P.species)}${P.asleep?'<div class="zzz"><span>z</span><span>z</span><span>Z</span></div>':''}</div><div class="bubble" id="psay">${line}</div></div>`}
     <div class="petinfo box"><p class="kicker">River's ${P.species==='cat'?'cat':spw(P.species)}${S.pets.length>1?` · ${S.petIdx+1} of ${S.pets.length}`:''}</p><h2 class="hl">${esc(P.name)}</h2>
-      <p class="dek">${sname(P,st)}${next?` · ${next[0]-P.fed} more treat${next[0]-P.fed>1?'s':''} until ${sname(P,st+1)}`:' · Fully grown!'}</p>
+      <p class="dek">${sname(P,st)}${growLine(P,st,next)}</p>
       <div class="meter"><span>Happiness</span><b>${'❤️'.repeat(hearts)}${'🤍'.repeat(5-hearts)}</b></div>
       <div class="meter"><span>Growing</span><div class="bar"><i style="width:${pct}%"></i></div></div>
       <p class="tcount">You have <b>🦴 ${S.treats}</b> treat${S.treats===1?'':'s'}</p>
@@ -1577,7 +1635,7 @@ function petPage(){
   applyWear(svg,P.wear.hat==='none'&&st===3?{...P.wear,hat:'crown'}:P.wear);
   if(P.asleep)svg.classList.add('asleep');
   const talk=(t,kind)=>{say.textContent=t;petVoice(P,t,kind)};
-  const anim=c=>{['happy','t-sit','t-paw','t-spin','t-roll','t-dance','t-shake'].forEach(x=>svg.classList.remove(x));void svg.getBoundingClientRect();svg.classList.add(c)};
+  const anim=c=>{['happy','t-shake'].concat(TRICKS.map(x=>'t-'+x[0])).forEach(x=>svg.classList.remove(x));void svg.getBoundingClientRect();svg.classList.add(c)};
   const joy=n=>{if(Date.now()>petCool){P.happy=Math.min(100,P.happy+n);petCool=Date.now()+1500;save()}};
   const idle=()=>{clearTimeout(idleT);if(!P.asleep)idleT=setTimeout(()=>{if(view==='pet'&&!P.asleep){P.asleep=true;P.napStart=Date.now();save();render()}},60000)};
   const sleepy=()=>{if(!P.asleep)return false;talk(`Shh… ${P.name} is sleeping. Tap Wake up first! 🤫`,'snore');return true};
@@ -1591,7 +1649,7 @@ function petPage(){
     if(b.dataset.tab){petTab=b.dataset.tab;render();return}
     if(b.dataset.sc){snackCat=b.dataset.sc;render();return}
     if(b.dataset.food){if(sleepy())return;if(S.treats<1){talk('No treats left! Pass a level to earn more. 🦴');return}
-      const f=FOODS.find(x=>x.id===b.dataset.food);S.treats--;P.fed+=f.c==='healthy'?2:1;
+      const f=FOODS.find(x=>x.id===b.dataset.food);S.treats--;{const fb=P.fed;P.fed+=f.c==='healthy'?2:1;capGrow(P,fb)}mission('feed');
       if(!P.fav)P.fav=FOODS[rnd(FOODS.length)].id;
       let [line,fx,chars]=FOODLINE[f.id]||[CATLINE[f.c][rnd(3)],f.c==='sweets'?'t-spin':'happy',[]],joyN=f.c==='sweets'?14:10;
       if(LIKES[P.species||'dog'].includes(f.id)){joyN+=5;line='Mmm, my kind of food! '+line}
@@ -1606,25 +1664,26 @@ function petPage(){
     if(b.dataset.a==='nap'){if(P.asleep)wake();else{P.asleep=true;P.napStart=Date.now();save();render();petSound(P,'snore')}return}
     if(b.dataset.a){if(sleepy())return;const a=b.dataset.a;
       if(a==='feed'){if(S.treats<1){talk('No treats left! Pass a level to earn more. 🦴');return}
-        S.treats--;P.fed++;P.happy=Math.min(100,P.happy+12);save();anim('happy');burst(...mid(svg),['🦴','😋','❤️']);
+        S.treats--;{const fb=P.fed;P.fed++;capGrow(P,fb)}mission('feed');P.happy=Math.min(100,P.happy+12);save();anim('happy');burst(...mid(svg),['🦴','😋','❤️']);
         const ns=stageOf(P.fed);talk(['Yum yum!','Crunch crunch! Thank you!','Best treat ever!'][rnd(3)],'eat');
         setTimeout(()=>{if(view!=='pet')return;render();if(ns>st){toast(`🎉 ${esc(P.name)} grew into a ${sname(P,ns)}!`+(TRICKS.some(t=>t[2]===ns)?' New trick unlocked!':''));burst(innerWidth/2,innerHeight/2,['🎉','⭐','🐾'])}},900);return}
       if(a==='pet'){anim('happy');burst(...mid(svg),['❤️','💛','🐾']);joy(3);talk(['Hee hee, that tickles!','More scratches please!','*happy wiggle*'][rnd(3)],P.species==='cat'?'purr':null);return}
       if(a==='ball'){const ball=document.createElement('span');ball.className='ballfx';ball.textContent='🎾';document.getElementById('petbox').appendChild(ball);
         setTimeout(()=>{ball.remove();anim('happy');talk(['Got it! Again, again!','Fetch is my favourite!','Throw it farther!'][rnd(3)])},900);joy(5);return}
       if(a==='bath'){anim('t-shake');burst(...mid(svg),['🫧','💧','🧼','🫧']);joy(4);talk(['Splish splash!','*shake shake shake* Oops, sorry!','I smell like flowers now!'][rnd(3)],'splash');return}}
+    if(b.dataset.tr){if(sleepy())return;trainTrick(P,TRICKS.find(x=>x[0]===b.dataset.tr));return}
     if(b.dataset.t){if(sleepy())return;const t=TRICKS.find(x=>x[0]===b.dataset.t);anim('t-'+t[0]);joy(2);burst(...mid(svg),[t[3],'⭐']);
-      talk({sit:'*sits* Good dog? Good dog!',paw:'High five, River! ✋',spin:'Wheee! Round and round!',roll:'Ta-da! Did you see that?',dance:'Look at my moves! 🎵'}[t[0]]);return}
+      talk(TRICKLINE[t[0]]||'Ta-da!');return}
     if(b.dataset.coat){P.coat=b.dataset.coat;save();render();return}
     if(b.dataset.ear){P.ear=b.dataset.ear;save();render();return}
     if(b.dataset.cl){closet=b.dataset.cl;render();return}
     if(b.dataset.vp){P.vp=+b.dataset.vp;save();render();petVoice(P,`Hi River! I'm ${P.name}!`);return}
     if(b.id==='vtest'){petVoice(P,`Hi River! I'm ${P.name}! I love you!`);return}
-    if(b.id==='surprise'){if(sleepy())return;for(const k of Object.keys(NOWEAR)){const o=Object.keys(WEAR[k]);P.wear[k]=Math.random()<.3?'none':o[1+rnd(o.length-1)]}
+    if(b.id==='surprise'){if(sleepy())return;mission('dress');for(const k of Object.keys(NOWEAR)){const o=Object.keys(WEAR[k]).filter(v=>ownsWear(k,v));P.wear[k]=Math.random()<.3?'none':o[1+rnd(o.length-1)]}
       save();render();const s2=main.querySelector('.petbox .pet');s2.classList.add('t-spin');burst(...mid(s2),['✨','👗','🎩','⭐']);
       document.getElementById('psay').textContent=['Ooh, how do I look?','Fancy! I feel like a movie star!','Is this my best outfit ever?'][rnd(3)];return}
     if(b.id==='undress'){P.wear={...NOWEAR};save();render();return}
-    if(b.dataset.k){P.wear[b.dataset.k]=b.dataset.v;save();render();if(b.dataset.v!=='none'){const s2=main.querySelector('.petbox .pet');s2.classList.add('happy');
+    if(b.dataset.k){P.wear[b.dataset.k]=b.dataset.v;if(b.dataset.v!=='none')mission('dress');save();render();if(b.dataset.v!=='none'){const s2=main.querySelector('.petbox .pet');s2.classList.add('happy');
       document.getElementById('psay').textContent=['Ooh, I love it!','Do I look fancy?','So stylish!','This is my favourite!'][rnd(4)]}return}
     if(b.id==='renameBtn'){const v=document.getElementById('rename').value.trim();if(!v)return;P.name=v;save();toast(`Your pup is now called ${esc(v)}!`);render();return}
     if(b.dataset.sw){S.petIdx=+b.dataset.sw;save();render();return}
@@ -1662,6 +1721,7 @@ function parkStage(line){
     <div class="bubble" id="psay">${line}</div></div>`}
 function setupPark(){
   const stage=main.querySelector('.petstage.park'),say=document.getElementById('psay');
+  mission('park');
   if(S.parkDay!==today){S.parkDay=today;S.pets.forEach(p=>p.happy=Math.min(100,p.happy+5));save();setTimeout(()=>toast('🌳 Park day! Every pet is a little happier.'),300)}
   const els=[...stage.querySelectorAll('.ppet')];
   els.forEach(el=>{const p=S.pets[+el.dataset.i],svg=el.querySelector('.dog');const st=stageOf(p.fed);
@@ -1676,7 +1736,11 @@ function setupPark(){
     if(Math.random()<.25&&!swim)return;
     moveTo(el,swim?74+Math.random()*12:10+Math.random()*58,swim?5+Math.random()*3:9+Math.random()*16,swim)});
   clearInterval(parkTimer);
-  parkTimer=setInterval(()=>{if(view!=='pet'||petTab!=='park'){clearInterval(parkTimer);return}wander()},3400);
+  const known=p=>TRICKS.filter(t=>((p.tr||{})[t[0]]||0)>=3);
+  const doTrick=el=>{const p=S.pets[+el.dataset.i],k=known(p);if(!k.length||p.asleep)return false;const t=k[rnd(k.length)],s=el.querySelector('.dog');
+    s.classList.remove('happy',...TRICKS.map(x=>'t-'+x[0]));void s.getBoundingClientRect();s.classList.add('t-'+t[0]);pbub(el,`${t[3]} ${t[1]}!`);return true};
+  parkTimer=setInterval(()=>{if(view!=='pet'||petTab!=='park'){clearInterval(parkTimer);return}wander();
+    if(Math.random()<.35){const a=els.filter(el=>!el.classList.contains('walking'));if(a.length)setTimeout(()=>doTrick(a[rnd(a.length)]),2400)}},3400);
   setTimeout(wander,400);
   const LINES=['Wheee!','I love the park!','Race you!','Look, a butterfly!','*sniff sniff*','This is the best day!'];
   const CAPYLINES=['So relaxing…','The pond is lovely today.','*happy squeak*','Very chill.','Splish splash!'];
@@ -1695,6 +1759,8 @@ function setupPark(){
     if(a==='bubbles'){for(let i=0;i<10;i++){const s=document.createElement('span');s.className='pbubble';s.textContent='🫧';
         s.style.left=(10+Math.random()*80)+'%';s.style.animationDelay=(i*.25)+'s';s.style.setProperty('--dx',(Math.random()*80-40)+'px');stage.appendChild(s);setTimeout(()=>s.remove(),6500)}
       team.forEach((el,i)=>setTimeout(()=>{hop(el);pbub(el,['Bubbles!','Pop pop!','I got one!'][rnd(3)])},400+i*500));say.textContent='Bubbles! Catch them!'}
+    if(a==='show'){let any=false;team.forEach((el,i)=>setTimeout(()=>{if(doTrick(el))burst(...mid(el),['⭐','✨'])},300+i*900));
+      any=team.some(el=>known(S.pets[+el.dataset.i]).length);say.textContent=any?'Show-off time! Look what we learned!':'Nobody knows a trick yet! Train one in the 🎓 Tricks tab.';return}
     if(a==='call'){team.forEach((el,i)=>{moveTo(el,32+i*14,10,false);setTimeout(()=>{hop(el);pbub(el,'Here I am!')},2300)});say.textContent='Everybody, come here!'}};
 }
 
@@ -1731,18 +1797,20 @@ function readPaper(btn){
   const h=new Date().getHours(),tod=h<12?'morning':h<17?'afternoon':'evening',[title,panels]=comicOfDay(),jk=daily(JOKES,1);
   speakAll([`Good ${tod}, River! This is Chief Barker, with River's Daily Doggo for ${new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}.`,
     ED?`${ED.t} ${ED.m}`:'',
+    (()=>{const r=S.reports.filter(x=>x.printed===today).pop();return r?`Front page exclusive! A special report by our very own cub reporter, River. ${r.h||''}. ${r.b||''}`:''})(),
     S.set.feeds&&all.length?`Today's top story: ${hl(all[0])}. ${all[0].who.charAt(0).toUpperCase()+all[0].who.slice(1)} ${all[0].cap.charAt(0).toLowerCase()+all[0].cap.slice(1)}`:'',
     `Did you know? ${document.getElementById('fact').textContent}`,`The weather report says: ${document.getElementById('weather').textContent}.`,
     `Now, the joke of the day. ${jk[0]}`,jk[1],`In the funny pages: ${title}. ${panels.map(x=>x[0]).join(' ')}`,
     (()=>{const b=bdayDays();return b.n?`Big news! Only ${b.n} more sleep${b.n===1?'':'s'} until River's birthday on ${b.label}!`:''})(),
     S.gallery.length?`In the art pages, River made a wonderful picture. ${review(S.gallery[0])}`:'',
+    (()=>{const st=storyState(),se=SEASONS[st.s];return`In the Daily Serial: ${se.t}, chapter ${st.n}. ${se.ch[st.n-1].t}. What will happen next?`})(),
     S.pets.length?`And a special hello to ${S.pets.map(p=>p.name).join(' and ')}!`:'',"That's all the news for today. Cheerio!"]);
-  if(btn&&S.set.voice)btn.textContent='⏹ Stop reading';
+  if(btn&&S.set.voice)btn.textContent='⏹ Stop reading';mission('listen');
 }
 
 // ---- Inside Today (sidebar contents list)
 function jumpTo(sel){const go=()=>{const el=document.querySelector(sel);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})};if(view!=='today'){view='today';render();setTimeout(go,120)}else go()}
-{const INSIDE=[['⭐','Pup of the Day','.potd, .leadart, .msg'],['🎂',"River's birthday countdown",'.bdaybar'],['😂','The Funny Pages','.comic'],['🎨','The Art Page','.artsec'],
+{const INSIDE=[['🗒️',"Chief's Missions",'.missions'],['⭐','Pup of the Day','.scoop, .potd, .leadart, .msg'],['📖','The Daily Serial','.serialbox'],['📝','Cub Reporter Desk','.repbox'],['🎂',"River's birthday countdown",'.bdaybar'],['😂','The Funny Pages','.comic'],['🎨','The Art Page','.artsec'],
   ['💌','Letters to the Editor','.letters'],['🧩','Puzzles & games',null],['🐾','Visit my pets',null]];
  const ul=document.getElementById('insideList');
  if(ul){ul.innerHTML=INSIDE.map(([i,n,sel],k)=>`<li><button data-in="${k}">${i} ${n}</button></li>`).join('');
@@ -1830,7 +1898,7 @@ function setupLetters(){
     S.letters.push({d:today,text:mode==='type'?text:'',img});
     let withImg=0;for(let i=S.letters.length-1;i>=0;i--)if(S.letters[i].img&&++withImg>6)S.letters[i].img='';
     S.letters=S.letters.slice(-12);save();burst(e.clientX||innerWidth/2,e.clientY||300,['✉️','💌','🐾']);
-    toast("📮 Letter sent! Chief Barker will write back in tomorrow's paper.");render()};
+    toast("📮 Letter sent! Chief Barker will write back in tomorrow's paper.");render();mission('letter')};
 }
 
 // ---- colouring pages (each .rg shape can be painted)
@@ -1928,7 +1996,7 @@ const hex2rgb=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h
 saveFallback=()=>saveSafe();
 autoSafeHook=()=>autoSafe();
 const SAFEKEY=KEY+'-autosave';
-function autoSafe(){if(!S.pets||!S.pets.length)return;try{const keep={};['pets','petIdx','treats','lv','stk','favs','set','streak','last','first','dots','lessonsDone','designs','wear','best','letters']
+function autoSafe(){if(!S.pets||!S.pets.length)return;try{const keep={};['pets','petIdx','treats','lv','stk','favs','set','streak','last','first','dots','lessonsDone','designs','wear','best','letters','rare','story','reports','week','mis']
   .forEach(k=>{if(S[k]!==undefined)keep[k]=S[k]});(keep.letters||[]).forEach(l=>l.img='');localStorage.setItem(SAFEKEY,JSON.stringify({saved:today,data:keep}))}catch(e){}}
 function offerRescue(){if(S.pets&&S.pets.length)return;let b=null;try{b=JSON.parse(localStorage.getItem(SAFEKEY))}catch(e){}
   if(!b||!b.data||!b.data.pets||!b.data.pets.length)return;const names=b.data.pets.map(p=>esc(p.name)).join(', ');
@@ -2138,7 +2206,8 @@ const thumbSrc=g=>g.type==='colour'?svgURI(colourSVG(g.page,g.fills)):g.img;
 function addToGallery(item){item.id=Date.now();item.d=today;S.gallery.unshift(item);
   while(S.gallery.length>16){const i=S.gallery.map(g=>g.id!==S.wallArt).lastIndexOf(true);S.gallery.splice(i<0?S.gallery.length-1:i,1)}
   if(!S.artFirst){S.artFirst=1;S.treats+=2;setTimeout(()=>toast('🎨 Your first gallery picture! +2 🦴 treats.'),900)}
-  saveSafe();toast('🖼️ Saved to River\'s Gallery! It will be printed in tomorrow\'s paper.')}
+  saveSafe();toast('🖼️ Saved to River\'s Gallery! It will be printed in tomorrow\'s paper.');mission('art');
+  if(repReturn){repReturn=false;repPick=String(item.id);if(S.repDraft)S.repDraft.p=repPick;setTimeout(()=>{view='reporter';render();scrollTo({top:0});toast('🗞️ Your picture is in your story!')},1200)}}
 
 
 // ---- learn to draw: step-by-step guides (drawn in pet coordinates, scaled onto the canvas)
@@ -2555,6 +2624,304 @@ GAMES.push(
   {id:'math',kind:'learn',name:'Treat Math',icon:'➕',desc:'Count the bones and do the sums',run:treatMath,levels:[
     {op:'+',max:5,pics:true,pass:8,name:'Adding up to 5'},{op:'+',max:10,pics:true,pass:8,name:'Adding up to 10'},{op:'-',max:10,pics:true,pass:8,name:'Taking away'},
     {op:'mix',max:20,pass:8,name:'Plus and minus to 20'},{op:'x',pass:8,name:'Times 2, 5 and 10'}]});
+
+// ================= NEXT LEVEL: missions, treasure chest, cub reporter, serial story, growing up & training =================
+S.mis=S.mis||{};S.reports=S.reports||[];S.rare=S.rare||{};
+const dayOf=s=>new Date(s+'T12:00');
+const daysBetween=(a,b)=>Math.round((dayOf(b)-dayOf(a))/864e5);
+const plural=(n,w)=>n+' '+w+(n===1?'':'s');
+
+// ---- rare outfits (only from the Sunday treasure chest)
+Object.assign(WEAR.hat,{
+  royal:['✨ Royal crown',`<polygon points="100,60 102,8 124,36 150,-4 176,36 198,8 200,60" fill="#f6c945" ${K}/><rect x="98" y="52" width="104" height="12" rx="4" fill="#d8a32a" ${K}/><circle class="noink" cx="150" cy="30" r="8" fill="#d93b2b" stroke="#1f1a14" stroke-width="2"/><circle class="noink" cx="114" cy="40" r="5" fill="#3b6fb6"/><circle class="noink" cx="186" cy="40" r="5" fill="#2f6b3f"/><circle class="noink" cx="124" cy="58" r="3" fill="#fff"/><circle class="noink" cx="150" cy="58" r="3" fill="#fff"/><circle class="noink" cx="176" cy="58" r="3" fill="#fff"/>`],
+  astro:['✨ Space helmet',`<circle class="noink" cx="150" cy="118" r="96" fill="#bfe3ff" fill-opacity=".22" stroke="#e9eef5" stroke-width="9"/><circle class="noink" cx="150" cy="118" r="96" fill="none" stroke="#1f1a14" stroke-width="2.5"/><path class="noink" d="M86 70 Q100 46 128 36" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".8"/><rect x="104" y="196" width="92" height="16" rx="8" fill="#9aa0a6" ${K}/>`],
+  unicorn:['✨ Unicorn horn',`<polygon points="150,-30 136,56 164,56" fill="#f6d13a" ${K}/><path class="noink" d="M140 36 L160 30 M143 18 L157 13 M146 2 L154 -2" stroke="#f29ab8" stroke-width="4"/>${flower(118,62,'#f29ab8')}${flower(182,62,'#8e5cc4')}`]});
+Object.assign(WEAR.eyes,{
+  rainbow:['✨ Rainbow shades',[['#d93b2b',96],['#f28c28',101],['#f6d13a',106],['#8bc34a',111],['#3b6fb6',116],['#8e5cc4',121]].map(([c,y])=>`<rect class="noink" x="100" y="${y}" width="44" height="5" fill="${c}"/><rect class="noink" x="156" y="${y}" width="44" height="5" fill="${c}"/>`).join('')+`<rect x="100" y="96" width="44" height="30" rx="9" fill="none" ${K}/><rect x="156" y="96" width="44" height="30" rx="9" fill="none" ${K}/><path d="M144 104 L156 104" stroke="#1f1a14" stroke-width="4"/>`],
+  diamond:['✨ Diamond specs',`<polygon points="122,90 142,108 122,128 102,108" fill="#bfe8ff" fill-opacity=".85" ${K}/><polygon points="178,90 198,108 178,128 158,108" fill="#bfe8ff" fill-opacity=".85" ${K}/><path d="M142 106 L158 106" stroke="#1f1a14" stroke-width="4"/><path class="noink" d="M112 104 L120 98 M168 104 L176 98" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`]});
+Object.assign(WEAR.neck,{
+  rainbowscarf:['✨ Rainbow scarf',`<g ${K}><path d="M96 176 Q150 204 204 176 L204 194 Q150 222 96 194 Z" fill="#8e5cc4"/><path d="M176 196 L188 248 L164 248 L160 200 Z" fill="#3b6fb6"/></g><path class="noink" d="M98 182 Q150 208 202 182" fill="none" stroke="#f6d13a" stroke-width="5"/><path class="noink" d="M98 188 Q150 214 202 188" fill="none" stroke="#d93b2b" stroke-width="4"/><path class="noink" d="M168 214 L184 214 M170 228 L186 228" stroke="#8bc34a" stroke-width="5"/>`],
+  goldbell:['✨ Golden star medal',`<path d="M132 184 L150 212 L168 184" fill="none" stroke="#a8321f" stroke-width="7"/><polygon points="${starPts(150,226,20,9)}" fill="#f6c945" ${K}/><circle class="noink" cx="150" cy="226" r="5" fill="#fff" opacity=".7"/>`]});
+Object.assign(WEAR.body,{
+  spacesuit:['✨ Space suit',TOP('#e9eef5',`<rect x="128" y="204" width="44" height="26" rx="5" fill="#9aa0a6" ${K}/><circle class="noink" cx="140" cy="217" r="4" fill="#d93b2b"/><circle class="noink" cx="152" cy="217" r="4" fill="#8bc34a"/><circle class="noink" cx="164" cy="217" r="4" fill="#3b6fb6"/><polygon class="noink" points="${starPts(116,196,8,3.5)}" fill="#f6d13a"/>`)],
+  robe:['✨ Royal robe',`<path d="M104 184 Q150 206 196 184 L196 196 Q150 220 104 196 Z" fill="#fffaf0" ${K}/>${[116,134,150,166,184].map(x=>`<circle class="noink" cx="${x}" cy="${x===150?206:200}" r="2.4" fill="#1f1a14"/>`).join('')}`,`<path d="M104 182 Q150 200 196 182 L240 290 Q150 304 60 290 Z" fill="#6a2c91" ${K}/><path class="noink" d="M62 286 Q150 300 238 286" fill="none" stroke="#f6c945" stroke-width="6"/>`]});
+Object.assign(WEAR.feet,{
+  rocket:['✨ Rocket boots',`<path d="M118 290 L126 304 L134 290 Z M166 290 L174 304 L182 290 Z" fill="#f28c28"/><rect x="109" y="254" width="36" height="34" rx="8" fill="#c0c7d1" ${K}/><rect x="155" y="254" width="36" height="34" rx="8" fill="#c0c7d1" ${K}/><path class="noink" d="M111 266 H143 M157 266 H189" stroke="#d93b2b" stroke-width="5"/>`],
+  glitter:['✨ Glitter shoes',`<path d="M106 286 C106 266 122 262 130 266 C140 270 148 276 148 286 Z" fill="#f29ab8" ${K}/><path d="M152 286 C152 276 160 270 170 266 C178 262 194 266 194 286 Z" fill="#f29ab8" ${K}/>${[[118,276],[132,272],[140,281],[162,276],[176,271],[186,280]].map(([x,y])=>`<circle class="noink" cx="${x}" cy="${y}" r="2.5" fill="#fff"/>`).join('')}`]});
+const RARE=['hat:royal','hat:astro','hat:unicorn','eyes:rainbow','eyes:diamond','neck:rainbowscarf','neck:goldbell','body:spacesuit','body:robe','feet:rocket','feet:glitter'];
+const RAREICON={royal:'👑',astro:'🧑‍🚀',unicorn:'🦄',rainbow:'🌈',diamond:'💎',rainbowscarf:'🧣',goldbell:'⭐',spacesuit:'🚀',robe:'👘',rocket:'🚀',glitter:'✨'};
+const ownsWear=(k,v)=>RARE.indexOf(k+':'+v)<0||!!(S.rare||{})[k+':'+v];
+
+// ---- daily missions + Sunday treasure chest
+const MISSIONS={
+  feed:['🦴','Give one of your pets a snack','pet:care'],
+  park:['🌳','Take your pets to the park','pet:park'],
+  train:['🎓','Practise a trick with your pet','pet:tricks'],
+  dress:['👗','Dress up a pet in something new','pet:style'],
+  level:['🧩','Pass a level in Puzzles & Games','games'],
+  art:['🎨','Save a picture to your art gallery','art'],
+  story:['📖',"Read today's chapter of the Daily Serial",'story'],
+  report:['📝','Write a story as a Cub Reporter','reporter'],
+  letter:['💌','Send a letter to Chief Barker','letters'],
+  joke:['😂','Reveal a riddle answer in the Funny Pages','funny'],
+  listen:['🔊',"Have Chief read you today's paper",'listen']};
+const MGROUPS=[['feed','park','train','dress','train','feed'],['level','art','level','art','level'],['story','report','letter','joke','story','listen','story']];
+function todaysMissions(){if(S.mis.d!==today){S.mis={d:today,list:MGROUPS.map((g,i)=>dailyAt(g,40+i,DAYN)),done:{}};save()}return S.mis}
+const mondayOf=s=>{const d=dayOf(s);d.setDate(d.getDate()-(d.getDay()+6)%7);return day(d)};
+const isSunday=()=>dayOf(today).getDay()===0;
+function weekState(){const wk=mondayOf(today);
+  if(!S.week||S.week.id!==wk){if(S.week&&!S.week.opened&&S.week.days&&S.week.days.length)S.chestOld={n:S.week.days.length};S.week={id:wk,days:[],opened:false};save()}
+  return S.week}
+const chestReady=()=>{const w=weekState();return!!S.chestOld||(isSunday()&&!w.opened&&w.days.length>0)};
+function mission(k){try{const m=todaysMissions();if(m.list.indexOf(k)<0||m.done[k])return;m.done[k]=1;S.treats+=1;
+  const all3=m.list.every(x=>m.done[x]);let msg=`✅ Mission done: ${MISSIONS[k][1]}! +1 🦴`;
+  if(all3){const w=weekState();if(w.days.indexOf(today)<0)w.days.push(today);S.treats+=2;msg=`🔑 All 3 missions done! +3 🦴 and a key for ${isSunday()?"today's":"Sunday's"} treasure chest!`}
+  save();setTimeout(()=>{toast(msg);if(all3)burst(innerWidth/2,innerHeight/3,['🔑','⭐','🐾','🎉'])},350);
+  const mb=document.querySelector('.missions');if(mb)mb.outerHTML=missionsHTML()}catch(e){}}
+function missionsHTML(){const m=todaysMissions(),w=weekState(),mon=dayOf(w.id),DN=['M','T','W','T','F','S','S'];
+  const slots=DN.map((n,i)=>{const d=new Date(mon);d.setDate(d.getDate()+i);const ds=day(d),got=w.days.indexOf(ds)>=0;
+    return`<span class="wslot${got?' got':''}${ds===today?' now':''}${i===6?' sun':''}"><i>${i===6?(w.opened?'📭':'🎁'):got?'🔑':'·'}</i><small>${n}</small></span>`}).join('');
+  const left=m.list.filter(k=>!m.done[k]).length;
+  return`<section class="box missions"><h3>🗒️ Chief's Missions for Today</h3>
+    <ul>${m.list.map(k=>{const[ic,t,go]=MISSIONS[k],ok=!!m.done[k];return`<li class="${ok?'done':''}"><span class="mchk">${ok?'✅':'⬜'}</span><span class="mt">${ic} ${t}</span>${ok?'':`<button data-mgo="${go}">Go!</button>`}</li>`}).join('')}</ul>
+    <div class="week"><div class="wslots">${slots}</div><p>${chestReady()?'<button id="chestBtn" class="go">🎁 Open the treasure chest!</button>'
+      :left?`Finish all 3 missions to earn a 🔑 key. On Sunday, the keys open a treasure chest with rare outfits inside!`:`🔑 Today's key is earned! ${isSunday()&&w.opened?'See you next week for a new chest.':'The more keys, the better the chest on Sunday.'}`}</p></div></section>`}
+function missionGo(go){endGame();const[v,t]=go.split(':');
+  if(v==='pet'){view='pet';petTab=t;render();scrollTo({top:0});return}
+  if(v==='games'){view='games';render();scrollTo({top:0});return}
+  if(v==='art'){artGo('home');return}
+  if(v==='story'){storyCh=-1;view='story';render();scrollTo({top:0});return}
+  if(v==='reporter'){view='reporter';render();scrollTo({top:0});return}
+  if(v==='letters'){jumpTo('.letters');return}
+  if(v==='funny'){jumpTo('.comic');return}
+  if(v==='listen'){jumpTo('.readbar');readPaper(document.getElementById('readPaper'))}}
+const CHESTSVG=`<svg class="chest" viewBox="0 0 200 170"><ellipse cx="100" cy="160" rx="80" ry="8" fill="#000" opacity=".15"/>
+  <g class="cglow"><circle cx="100" cy="82" r="60" fill="#f6d13a" opacity=".45"/></g>
+  <rect x="26" y="80" width="148" height="76" rx="8" fill="#a0612e" stroke="#1f1a14" stroke-width="4"/>
+  <rect x="26" y="80" width="148" height="14" fill="#7a4520"/><rect x="40" y="80" width="14" height="76" fill="#d8a32a" stroke="#1f1a14" stroke-width="3"/><rect x="146" y="80" width="14" height="76" fill="#d8a32a" stroke="#1f1a14" stroke-width="3"/>
+  <g class="lid"><path d="M26 82 L26 56 Q100 8 174 56 L174 82 Z" fill="#b8733a" stroke="#1f1a14" stroke-width="4" stroke-linejoin="round"/><path d="M40 82 L40 46 M160 82 L160 46" stroke="#d8a32a" stroke-width="12"/><path d="M40 82 L40 46 M160 82 L160 46" stroke="#1f1a14" stroke-width="1"/></g>
+  <rect x="88" y="74" width="24" height="28" rx="4" fill="#f6c945" stroke="#1f1a14" stroke-width="3"/><circle cx="100" cy="86" r="4" fill="#1f1a14"/></svg>`;
+function openChest(){const n=S.chestOld?S.chestOld.n:weekState().days.length;
+  modal(`<h3>Sunday Treasure Chest</h3><p>You earned <b>${plural(n,'key')}</b> this week! Tap the chest to open it.</p><button id="chestTap" class="chestbtn" aria-label="Open the chest">${CHESTSVG}</button><div id="chestOut"></div>`);
+  document.getElementById('chestTap').onclick=e=>{const btn=e.currentTarget;if(btn.classList.contains('open'))return;btn.classList.add('open');
+    const treats=2+3*n+(n>=7?10:0),got=[];S.treats+=treats;got.push(`🦴 <b>${treats} treats</b>`);
+    const want=n>=7?2:n>=3?1:0;for(let i=0;i<want;i++){const left=RARE.filter(r=>!S.rare[r]);if(!left.length){S.treats+=5;got.push('🦴 <b>5 bonus treats</b> (you have every rare item!)');break}
+      const r=left[rnd(left.length)],[k,v]=r.split(':');S.rare[r]=today;got.push(`${RAREICON[v]||'✨'} Rare item: <b>${WEAR[k][v][0].replace('✨ ','')}</b>`)}
+    if(!want)got.push('<small>Earn 3 or more keys next week to win a rare outfit!</small>');
+    if(S.chestOld)delete S.chestOld;else weekState().opened=true;save();
+    try{SFX.ding()}catch(_){}burst(innerWidth/2,innerHeight/2,['✨','⭐','🦴','🎉','👑']);
+    setTimeout(()=>{document.getElementById('chestOut').innerHTML=`<ul class="loot">${got.map(g=>`<li>${g}</li>`).join('')}</ul>${want?'<p class="how">Find rare items in <b>My pup → Dress up</b>. They sparkle with ✨!</p>':''}
+      <div class="rbtns"><button id="chestOk" class="go">Hooray!</button></div>`;document.getElementById('chestOk').onclick=()=>{closeModal();render()}},700)}}
+
+// ---- cub reporter
+const REPIDEAS=['My Pet Learned a New Trick!','Breaking News: Snow Day!','The Best Day Ever','Mystery in the Kitchen','Interview with My Pup',
+  'My Favourite Food in the Whole World','A Day at the Park','Top Secret: My Toy Collection','Weather Report from My Window','What I Dreamed Last Night',
+  'Family Fun Night','A Very Silly Thing Happened','My Best Friend','How to Be a Good Pet Owner','The Coolest Thing I Saw Today'];
+const REPNOTES=["Stop the presses! This is the best story we've had all year.","Brilliant reporting, River. You have a nose for news!",
+  "I read it three times, and my tail wagged every time.","Pulitzer Pup Prize material, I say!","Our readers will be talking about this for weeks!",
+  "Jolly good writing! You're a natural reporter."];
+const repPic=r=>{if(!r||!r.p)return'';const g=S.gallery.find(x=>String(x.id)===String(r.p));return g?thumbSrc(g):''};
+const repParas=t=>String(t||'').split(/\n+/).map(x=>x.trim()).filter(Boolean).map(x=>`<p>${esc(x)}</p>`).join('');
+function scoopToday(){const old=S.reports.filter(r=>r.d<today&&(!r.printed||r.printed===today));if(!old.length)return null;
+  let ch=false;old.forEach(x=>{if(!x.printed){x.printed=today;ch=true}});if(ch)save();return old[old.length-1]}
+function scoopHTML(){const r=scoopToday();if(!r)return'';const img=repPic(r),note=REPNOTES[hash(String(r.id))%REPNOTES.length];
+  return`<article class="card scoop"><p class="kicker">🗞️ Front Page Exclusive · Special Report</p><h2 class="hl">${esc(r.h||'Big News!')}</h2>
+    <p class="byline">By <b>River</b>, Cub Reporter · written ${fmt(r.d)}</p>${img?`<div class="scoopimg"><img src="${img}" alt="River's picture"></div>`:''}
+    <div class="scooptext">${repParas(r.b)}</div><p class="chiefnote"><b>Editor's note:</b> “${note}” <span>— Chief Barker</span></p>
+    <button class="sayit" data-say="${esc(`A special report by River, our cub reporter. ${r.h||''}. ${r.b||''}. Editor's note: ${note}`)}">🔊 Chief, read River's story</button></article>`}
+function newsroomHTML(){const st=storyState(),se=SEASONS[st.s],cur=se.ch[st.n-1],done=st.picks.length>=st.n,mine=S.reports.find(r=>r.d===today);
+  return`<h2 class="sec">From the Newsroom</h2><div class="duo">
+  <section class="box serialbox"><h3>📖 The Daily Serial</h3><p class="kicker">${se.e} ${esc(se.t)} · Chapter ${st.n} of ${se.ch.length}</p><p class="q">${esc(cur.t)}</p>
+    <p>${done?(st.n<se.ch.length?'✅ You read today\'s chapter! The next one arrives tomorrow.':'✅ You finished the whole adventure! A brand-new one starts tomorrow.'):'A new chapter is waiting! You get to choose what happens next.'}</p>
+    <button data-go="story" class="${done?'':'go'}">${done?'📖 Read it again':"📖 Read today's chapter"}</button></section>
+  <section class="box repbox"><h3>📝 Cub Reporter Desk</h3>${mine?`<p class="sent">🗞️ Your story <b>“${esc(mine.h||'Untitled')}”</b> is at the printing press. Look for it on tomorrow's front page!</p><button data-go="reporter">✏️ Change my story</button>`
+    :`<p>Write a story for the paper! It gets printed as the <b>front page headline</b> tomorrow, with your name on it.</p><button data-go="reporter" class="go">✏️ Write a story</button>`}</section></div>`}
+let repPick=null,repReturn=false;
+function reporterPage(){const mine=S.reports.find(r=>r.d===today),dr=S.repDraft||(mine?{h:mine.h,b:mine.b,p:mine.p}:{h:'',b:'',p:''});if(repPick===null)repPick=dr.p||'';
+  const pics=S.gallery.slice(0,12),past=S.reports.slice().reverse();
+  main.innerHTML=`<div class="game reporter"><div class="ghead"><button data-go="today">← Back to the paper</button><h2>Cub Reporter Desk</h2></div>
+  ${pagehead('tToday','Cub Reporter Desk',"Write a story today, and it's tomorrow's front page headline!")}
+  <div class="repdesk box">${mine?`<p class="sent">🗞️ “${esc(mine.h||'Untitled')}” is already at the press. You can change it until tomorrow.</p>`:''}
+    <label class="rl"><span>1. Your headline</span><input id="rhead" maxlength="70" value="${esc(dr.h)}" placeholder="Big news!"></label>
+    <p class="ideas">💡 Stuck? <button id="ridea" type="button">Give me an idea</button></p>
+    <label class="rl"><span>2. Your story</span><textarea id="rbody" maxlength="700" placeholder="What happened? Who was there? How did it feel?">${esc(dr.b)}</textarea></label>
+    <p class="how small">Tip: tap the 🎤 microphone on the iPad keyboard to say your story out loud.</p>
+    <div class="rl"><span>3. Pick a picture from your gallery</span></div>
+    <div class="rpics"><button data-rp="" class="nopic${repPick?'':' on'}">🚫<small>No picture</small></button>${pics.map(g=>`<button data-rp="${g.id}" class="${String(g.id)===String(repPick)?'on':''}"><img src="${thumbSrc(g)}" alt=""></button>`).join('')}
+      <button data-rdraw="1" class="nopic">🎨<small>Draw a new one</small></button></div>
+    <div class="rbtns"><button id="rsend" class="go">🗞️ Send to the printing press!</button></div><p class="err" id="rerr"></p></div>
+  ${past.length?`<h2 class="sec">My Stories</h2><div class="mystories">${past.map(r=>`<details class="box"><summary><b>${esc(r.h||'Untitled')}</b><small>${r.d===today?'At the press · prints tomorrow':'Printed '+fmt(r.printed||r.d)}</small></summary>
+    ${repPic(r)?`<img src="${repPic(r)}" alt="">`:''}${repParas(r.b)}<button class="sayit" data-say="${esc((r.h||'')+'. '+(r.b||''))}">🔊 Read it to me</button></details>`).join('')}</div>`:''}</div>`;
+  const q=id=>document.getElementById(id);
+  const keep=()=>{S.repDraft={h:q('rhead').value,b:q('rbody').value,p:repPick};save()};
+  q('rhead').onchange=keep;q('rbody').onchange=keep;
+  q('ridea').onclick=()=>{const cur=q('rhead').value;let i;do i=REPIDEAS[rnd(REPIDEAS.length)];while(i===cur);q('rhead').value=i;keep()};
+  main.querySelector('.rpics').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.rdraw){keep();repReturn=true;toast('🎨 Draw your picture, then tap Save. It will go straight into your story!');artGo('draw');return}
+    repPick=b.dataset.rp;main.querySelectorAll('.rpics button').forEach(x=>x.classList.toggle('on',x===b));keep()};
+  q('rsend').onclick=e=>{const h=q('rhead').value.trim(),b=q('rbody').value.trim();
+    if(!h&&!b){q('rerr').textContent='Write a headline or a story first!';return}
+    S.reports=S.reports.filter(r=>r.d!==today);S.reports.push({id:Date.now(),d:today,h,b,p:repPick||''});S.reports=S.reports.slice(-30);
+    S.repDraft=null;repPick=null;save();mission('report');burst(e.clientX||innerWidth/2,e.clientY||300,['🗞️','⭐','✏️','🐾']);
+    speak("Stop the presses! A brand new story from our cub reporter River. It will be on tomorrow's front page!");
+    toast("🗞️ Stop the presses! Your story will be on tomorrow's front page.");view='today';render();setTimeout(()=>jumpTo('.repbox'),150)}}
+
+// ---- the Daily Serial: a choose-what-happens story, one chapter a day
+const SEASONS=[
+ {t:'The Case of the Missing Bone',e:'🔍',ch:[
+  {t:'Stop the Presses!',p:["It was a busy morning at River's Daily Doggo. The printing press went clunk-clunk-whirr, and the newsroom smelled of fresh ink.","Then Chief Barker burst through the door. \"Stop the presses!\" he cried. \"My Golden Bone trophy is missing!\"","{A} and {B} looked at each other. The Golden Bone was the most famous trophy in all of Dogtown. Someone had to find it, and fast."],
+   q:'Where should {A} look first?',c:[['🔍 Under Chief\'s desk',"{A} crawled under the desk and found a sock, three crumbs and a tiny muddy paw print! \"A clue!\" shouted {A}."],['🚪 By the back door',"The back door was open just a crack, and on the mat was a tiny muddy paw print. \"A clue!\" shouted {A}."]],
+   x:'Whose tiny paw print is it? Find out tomorrow!'},
+  {t:'The Tiny Paw Print',p:["{A} looked at the paw print through a magnifying glass. It was very small, much smaller than any dog in the newsroom.","\"It could be a kitten,\" said {B}. \"Or a squirrel. Or a very small burglar wearing paw shoes.\"","Chief Barker scratched his ear. \"Every good reporter follows the clues!\""],
+   q:'How should they follow the trail?',c:[['👃 Sniff it out',"{A} put nose to the floor. Sniff, sniff, sniff! The smell led all the way outside, toward the park."],['🗺️ Draw a map',"{B} drew a map of every paw print. The prints made a wiggly line all the way to the park."]],
+   x:'Something is rustling in the bushes at the park…'},
+  {t:'Rustling in the Bushes',p:["At the park, the leaves were crunchy and orange. Suddenly the bushes went rustle, rustle, RUSTLE!","{A} froze. {B} hid behind a bench. Out popped a squirrel with big cheeks full of acorns!","\"Excuse me,\" said {A} politely. \"Have you seen a Golden Bone?\" The squirrel chattered and pointed a tiny paw toward the duck pond."],
+   q:'Should they trust the squirrel?',c:[['🤝 Yes, and say thank you',"\"Thank you, Mr. Squirrel!\" said {A}. The squirrel was so pleased that he gave them an acorn for luck."],['🤔 Ask for proof',"\"How do we know you're telling the truth?\" asked {B}. The squirrel rolled his eyes and dropped a shiny gold crumb. It came from the Golden Bone!"]],
+   x:'Quack! Who is waiting at the duck pond?'},
+  {t:'The Duck Pond',p:["{p1:{A}'s nose|{B}'s map} led them right to the duck pond{p2:, with the lucky acorn safe in a pocket|, with the gold crumb safe in a pocket}.","Ducks paddled in circles. In the middle of the pond sat a little island, and on it something sparkled in the sun.","\"The Golden Bone!\" gasped {A}. But how could they get across the water?"],
+   q:'How will they cross the pond?',c:[['🦆 Ask the ducks',"The ducks lined up like stepping stones. Hop, hop, hop! {A} made it across without even getting wet paws."],['🛶 Build a raft',"{A} and {B} tied sticks together with a ribbon and floated across. It was wobbly, but it worked!"]],
+   x:'But wait… the sparkly thing is not what they expected!'},
+  {t:'Not a Bone at All',p:["On the island, {A} dug through the leaves and pulled out the sparkly thing. It was a shiny gold candy wrapper.","\"Oh no,\" said {B}. \"A trick!\" But under the wrapper was a note in tiny, wobbly writing: MEET ME AT THE BAKERY. BRING A FRIEND.","{A} started to wiggle with excitement. A mystery note! This story was getting better and better."],
+   q:'What should they do with the note?',c:[['📰 Show Chief Barker',"They ran back to the newsroom. Chief Barker read the note and gasped. \"The bakery! Of course! Go, my brave reporters!\""],['🏃 Race to the bakery',"\"No time to lose!\" said {A}. They raced down the street so fast that their ears flapped in the wind."]],
+   x:'Something smells delicious at the bakery…'},
+  {t:'The Bakery Clue',p:["The bakery smelled like warm bread and cinnamon. Behind the counter, a baker was humming a happy tune.","And there in the corner, curled up in a basket, was a tiny grey kitten, holding the Golden Bone in her paws!","\"Oh!\" squeaked the kitten. \"I'm Pebble. I'm sorry. I just wanted to be a reporter too, and nobody ever notices me because I'm so small.\""],
+   q:'What should {A} say to Pebble?',c:[['💛 "You can be on our team!"',"Pebble's eyes went wide. \"Really? Me?\" She purred so loudly that the whole bakery shook."],['📝 "Let\'s write the story together!"',"Pebble jumped up. \"I can write very tiny letters!\" she said. \"Perfect for the small print at the bottom.\""]],
+   x:'Tomorrow is the big finale! Will Chief Barker forgive Pebble?'},
+  {t:'Front Page News',p:["Back at the newsroom, {A}, {B} and Pebble marched in with the Golden Bone held high.","Chief Barker looked at Pebble for a long time. Then he smiled the biggest smile in Dogtown. \"Anyone who solves a mystery like this belongs on my team. Welcome, new reporter!\"","That night the press went clunk-clunk-whirr, and the headline read: TINY KITTEN JOINS THE NEWSROOM! GOLDEN BONE FOUND!"],
+   q:'How should they celebrate?',c:[['🎉 A newsroom party',"There was cake, there were balloons, and Chief Barker danced so badly that everyone laughed until their tummies hurt."],['🍪 Bake treats for everyone',"They baked a giant batch of bone-shaped cookies and shared them with the squirrel, the ducks and the baker too."]],
+   x:'THE END of The Case of the Missing Bone! A brand-new adventure starts tomorrow.'}]},
+ {t:'The Great Snow Day',e:'❄️',ch:[
+  {t:'Snow Day!',p:["{A} woke up and looked out the window. Everything was white! Snow covered the trees, the roofs and Chief Barker's car.","\"SNOW DAY!\" barked Chief Barker, wearing three scarves and a toque. \"The paper is closed. Everybody outside!\"","{A} and {B} pulled on their warmest boots and ran out the door. Crunch, crunch, crunch went the snow."],
+   q:'What should they do first?',c:[['⛄ Build a snow-dog',"They rolled three big snowballs and made a snow-dog with stick ears and a carrot nose. It looked a lot like Chief Barker."],['😇 Make snow angels',"{A} flopped into the snow and wiggled. Swish, swish! Soon the whole yard was full of snow angels."]],
+   x:'Tomorrow: a big sled race is coming to town!'},
+  {t:'The Sled Race',p:["A poster on the lamppost said: GREAT DOGTOWN SLED RACE! TODAY AT HILLTOP! PRIZE: A GIANT MUG OF HOT COCOA!","{A}'s eyes lit up. Hot cocoa was the best. \"We need a sled,\" said {B}. \"A really fast one.\"","In the garage they found an old wooden sled, a laundry basket and a big shiny tray."],
+   q:'Which one should they race with?',c:[['🛷 The wooden sled',"They polished the sled until it shone and painted a red stripe on the side. \"We'll call it the Zoom Machine!\" said {A}."],['🧺 The laundry basket',"It was a strange choice, but the basket was round and bouncy. \"Nobody will expect this!\" giggled {B}."]],
+   x:'Ready, set… who will win the race?'},
+  {t:'Ready, Set, Snow!',p:["At the top of Hilltop, lots of animals lined up with their sleds. A goose blew a whistle. TWEEEET!","{A} and {B} zoomed down the hill in {p1:the Zoom Machine|the bouncy laundry basket}. The wind whooshed past their ears. Faster and faster!","They were in second place, right behind a speedy rabbit. Then, up ahead, they saw a little snowman standing right in the middle of the track!"],
+   q:'What should they do?',c:[['↩️ Swerve around it',"They leaned hard to the left and swerved around the snowman. Phew! The snowman was safe, and they were still in the race."],['🛑 Stop and move it',"They stopped and carefully carried the snowman to the side. The rabbit zoomed away, but saving the snowman felt good."]],
+   x:'Tomorrow: someone has lost something important in the snow…'},
+  {t:'The Lost Mitten',p:["After the race, {A} found a tiny red mitten lying in the snow. It was so small it could only fit a mouse.","Nearby, a little mouse was crying. \"I lost my mitten, and my paw is so cold!\" she sniffled.","{A} held up the mitten. \"Is this yours?\" The mouse squeaked with joy."],
+   q:'How else can they help the mouse?',c:[['🧣 Share a scarf',"{B} wrapped a scarf around the little mouse. It went around her nine times! She looked like a cozy cinnamon roll."],['🏠 Walk her home',"They walked the mouse all the way to her tiny house under the big pine tree. She waved goodbye from the window."]],
+   x:'Tomorrow: the snow fort battle begins!'},
+  {t:'Snow Fort',p:["The next morning, the whole neighbourhood was building snow forts. {A} and {B} built theirs with tall walls and a secret tunnel.","Across the yard, the rabbit from the race built a fort too. \"Snowball battle!\" called the rabbit. \"Ready, set, throw!\"","Snowballs flew everywhere. Pouf! Pouf! One hit Chief Barker right on the nose. Oops!"],
+   q:'What should they do next?',c:[['🏳️ Make friends',"{A} waved a white flag. \"Let's join our forts together!\" The rabbit agreed, and they built the biggest snow castle in Dogtown."],['❄️ Keep playing',"The battle went on until everyone was covered in snow and laughing so hard they fell over. Nobody won, and everybody won."]],
+   x:'Tomorrow: something magical lights up the night sky…'},
+  {t:'Lights in the Sky',p:["That night, {A} couldn't sleep. Out the window, the sky was glowing green and purple and pink.","\"The northern lights!\" whispered {B}. The colours danced and swirled like ribbons in the wind.","Chief Barker came out in his pyjamas. \"In all my years,\" he said softly, \"I have never seen them so bright.\""],
+   q:'What should they do?',c:[['📸 Take a picture for the paper',"{A} snapped a picture. It was so beautiful that Chief Barker said it would go on the front page."],['🌠 Make a wish',"{A} made a wish. It was a secret wish, but it had something to do with River."]],
+   x:'Tomorrow: the snow day grand finale!'},
+  {t:'Cocoa for Everyone',p:["On the last snowy day, the goose announced the sled race prizes. \"First place: the rabbit! And a special prize for kindness goes to {A} and {B}!\"","{p2:\"You swerved to keep the snowman safe,\"|\"You stopped to save the snowman,\"} said the goose, \"and you helped a little mouse find her mitten. That is what Dogtown is all about.\"","The prize was the biggest mug of hot cocoa anyone had ever seen, with a mountain of marshmallows on top."],
+   q:'Who should they share the cocoa with?',c:[['☕ Everyone!',"They found enough straws for everyone. The rabbit, the mouse, the goose and Chief Barker all sipped together. Slurrrp!"],['💛 Chief Barker first',"They gave the first sip to Chief Barker. He got a marshmallow moustache and said it was the best day of his whole life."]],
+   x:'THE END of The Great Snow Day! A brand-new adventure starts tomorrow.'}]},
+ {t:'Pirates of Puddle Bay',e:'🏴‍☠️',ch:[
+  {t:'A Message in a Bottle',p:["It was a rainy day, and {A} was splashing in puddles when something bumped into a paw. It was a glass bottle with a rolled-up paper inside!","{B} pulled out the paper. It was an old map, with a big red X and the words: THE TREASURE OF PUDDLE BAY.","\"A treasure map!\" cried {A}. \"We have to find it!\""],
+   q:'What should they bring on the adventure?',c:[['🔭 A telescope',"{A} found Chief Barker's old telescope. \"Now we can spot treasure from far, far away!\""],['🥪 Lots of snacks',"{B} packed sandwiches, apples and twelve dog biscuits. \"Every pirate needs snacks,\" said {B} wisely."]],
+   x:'Tomorrow: they need a ship!'},
+  {t:'The Good Ship Waggle',p:["Down at the dock sat a little old boat with a patched sail. A sign on it said: FOR ANY BRAVE CREW.","{A} and {B} scrubbed the deck, fixed the sail and painted a name on the side: THE GOOD SHIP WAGGLE.","Chief Barker came running with a pirate hat. \"I'm coming too!\" he said. \"Every ship needs a captain… or at least a cook.\""],
+   q:'Who should be the captain?',c:[['🧭 {A} is captain',"{A} put on the captain's hat. \"Raise the sail! Anchors away!\" Chief Barker saluted and went to make sandwiches."],['🎩 Chief Barker is captain',"Chief Barker stood tall at the wheel. \"Captain Barker reporting for duty!\" Then he steered right into a seagull. Oops."]],
+   x:'Tomorrow: a strange parrot lands on the ship…'},
+  {t:'The Talking Parrot',p:["Out on the sea, a bright green parrot landed on the mast. \"SQUAWK! Treasure hunters! Treasure hunters!\"","\"Who are you?\" asked {A}. \"I'm Captain Feathers!\" said the parrot. \"I know these waters better than anyone. But I only help pirates who can answer my riddle.\"","\"What has a mouth but never eats, and a bed but never sleeps?\""],
+   q:'What is the answer?',c:[['🌊 A river!',"\"A river!\" said {A}. \"Like River, who reads our newspaper!\" The parrot flapped happily. \"Correct! I will be your guide!\""],['🦈 A shark?',"\"A shark?\" guessed {B}. \"Ha! No, a shark eats LOTS,\" laughed the parrot. \"The answer is a river! But you made me laugh, so I will help you anyway.\""]],
+   x:'Tomorrow: a storm is coming!'},
+  {t:'The Big Storm',p:["Dark clouds rolled in. The wind howled, and big waves splashed over the deck. The Good Ship Waggle rocked up and down, up and down.","\"Hold on tight!\" squawked Captain Feathers. {A} held the wheel while {B} pulled down the sail.","Lightning flashed. And in the flash, {A} saw a little island with a tall palm tree, just like on the map!"],
+   q:'What should they do?',c:[['⚓ Drop the anchor',"They dropped the anchor and waited. Soon the storm passed, and a rainbow stretched right over the island."],['🚣 Row to the island',"They rowed through the waves, splash, splash, splash, until the boat bumped onto a sandy beach. They made it!"]],
+   x:'Tomorrow: Treasure Island!'},
+  {t:'Treasure Island',p:["The island had warm sand, coconut trees and crabs that walked sideways. Little paw prints followed {A} all along the beach.","{p0:{A} looked through the telescope and spotted|{B} shared a snack and pointed at} a big rock shaped like a dog's head. On the map, the X was right next to it!","But the path to the rock went through a dark, twisty jungle."],
+   q:'Which way should they go?',c:[['🌴 Through the jungle',"They tiptoed through the jungle. Monkeys giggled in the trees, and one dropped a banana on Chief Barker's head."],['🏖️ Along the beach',"They walked the long way around the beach and found beautiful shells. {A} picked a pink one to give to River."]],
+   x:'Tomorrow: X marks the spot!'},
+  {t:'X Marks the Spot',p:["At the dog-head rock, {A} started to dig. Dig, dig, dig! Sand flew everywhere. Then: CLUNK!","It was a wooden treasure chest with a big rusty lock. On the lock were letters: R, I, V, and two empty spaces.","\"The lock needs a word,\" said Captain Feathers. \"R, I, V… what could it be?\""],
+   q:'What is the secret word?',c:[['❤️ RIVER',"{A} turned the last letters: R-I-V-E-R. CLICK! The lock popped open. Of course! River is the treasure of every newspaper."],['🤔 Ask the parrot',"Captain Feathers winked. \"Who reads your paper every single day?\" {A} smiled and spelled R-I-V-E-R. CLICK! It opened."]],
+   x:"Tomorrow: what's inside the chest?!"},
+  {t:'The Real Treasure',p:["{A} slowly lifted the lid. Inside were gold coins made of chocolate, a pile of shiny buttons and an old photograph.","The photo showed a young Chief Barker on this very island, holding the very same map! \"I hid this treasure long ago,\" he said, smiling, \"so that one day, brave friends would find it together.\"","They sailed home on the Good Ship Waggle, singing pirate songs, with Captain Feathers on the mast and chocolate on their whiskers."],
+   q:'What should they do with the treasure?',c:[['🎁 Share it with Dogtown',"They gave chocolate coins to every animal in Dogtown. The rabbit, the mouse, the goose and Pebble the kitten all said thank you."],['🗺️ Hide it for the next crew',"They put half the treasure back with a brand-new map, for the next brave crew to find."]],
+   x:'THE END of Pirates of Puddle Bay! A brand-new adventure starts tomorrow.'}]}];
+function storyState(){let s=S.story;if(!s||!SEASONS[s.s]){s=S.story={s:0,n:1,picks:[],d:today};save()}
+  if(s.d!==today){if(s.picks.length>=s.n){if(s.n<SEASONS[s.s].ch.length)s.n++;else{s.s=(s.s+1)%SEASONS.length;s.n=1;s.picks=[]}}s.d=today;save()}return s}
+const storyCast=()=>{const a=S.pets[0],b=S.pets[1];return{A:a?a.name:'Biscuit',B:b?b.name:'Scoop'}};
+function storyFill(t,picks){const c=storyCast();
+  t=t.replace(/\{p(\d+):([^|}]*)\|([^}]*)\}/g,(m,i,x,y)=>(picks[+i]===1?y:x));
+  return t.replace(/\{A\}/g,c.A).replace(/\{B\}/g,c.B)}
+let storyCh=-1;
+function storyPage(){const st=storyState(),se=SEASONS[st.s];if(storyCh<0||storyCh>=st.n)storyCh=st.n-1;
+  const C=se.ch[storyCh],pick=st.picks[storyCh],F=t=>esc(storyFill(t,st.picks)),pets=S.pets.slice(0,2);
+  const castSVG=pets.length?pets.map(p=>`<span class="spet">${petSVG(p.coat,p.name[0].toUpperCase(),p.ear,p.species)}</span>`).join(`<span class="sscene">${se.e}</span>`)
+    :`<span class="sscene big">${se.e}</span>`;
+  main.innerHTML=`<div class="game storypage"><div class="ghead"><button data-go="today">← Back to the paper</button><h2>The Daily Serial</h2></div>
+  <div class="sthead box"><div class="stcast">${castSVG}</div><p class="kicker">${se.e} ${esc(se.t)} · Chapter ${storyCh+1} of ${se.ch.length}</p><h2 class="hl">${esc(C.t)}</h2>
+    <div class="chips">${se.ch.map((c,i)=>i<st.n?`<button data-sc="${i}" class="${i===storyCh?'on':''}">${st.picks[i]!==undefined?'✓ ':''}${i+1}</button>`:`<button disabled>🔒 ${i+1}</button>`).join('')}</div></div>
+  <div class="stbody box">${C.p.map((x,i)=>`<p${i?'':' class="drop"'}>${F(x)}</p>`).join('')}
+    <button class="sayit" id="sread">🔊 Chief, read me this chapter</button>
+    <div class="stq"><h3>${F(C.q)}</h3>${pick===undefined?`<div class="schoices">${C.c.map((c,i)=>`<button data-pick="${i}">${F(c[0])}</button>`).join('')}</div>`
+      :`<p class="picked">You chose: <b>${F(C.c[pick][0])}</b></p><p class="outcome">${F(C.c[pick][1])}</p><p class="tease">${F(C.x)}</p>
+        ${storyCh===st.n-1?`<p class="how">${st.n<se.ch.length?'📅 Come back tomorrow for Chapter '+(st.n+1)+'!':'🎉 You finished the whole story! A new adventure starts tomorrow.'}</p>`:''}`}</div></div></div>`;
+  main.querySelectorAll('.spet .pet').forEach((svg,i)=>applyWear(svg,pets[i].wear));
+  const root=main.querySelector('.storypage');
+  root.onclick=e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.sc){storyCh=+b.dataset.sc;render();return}
+    if(b.id==='sread'){speakAll([`Chapter ${storyCh+1}. ${C.t}.`].concat(C.p.map(x=>storyFill(x,st.picks)),[storyFill(C.q,st.picks)]).concat(pick===undefined?[]:[storyFill(C.c[pick][1],st.picks)]));return}
+    if(b.dataset.pick){const i=+b.dataset.pick;st.picks[storyCh]=i;
+      if(storyCh===se.ch.length-1){S.treats+=5;setTimeout(()=>{toast(`🎉 You finished “${esc(se.t)}”! +5 🦴 treats`);burst(innerWidth/2,innerHeight/3,['📖','⭐','🎉'])},500)}
+      save();mission('story');render();speak(storyFill(C.c[i][1],st.picks));const o=main.querySelector('.stq');if(o)o.scrollIntoView({behavior:'smooth',block:'center'})}}}
+
+// ---- growing up & trick training
+const GROWDAYS=[0,2,7,14],HEIGHTS=['3 paws','4 paws','6 paws','8 paws'];
+S.pets.forEach(P=>{if(!P.born){P.born=S.first||today;P.grew={};for(let i=0;i<=stageOf(P.fed);i++)P.grew[i]=i?'':P.born}
+  if(!P.tr){P.tr={};['sit','paw','spin','roll','dance'].forEach(k=>{const t=TRICKS.find(x=>x[0]===k);if(t&&t[2]<=stageOf(P.fed))P.tr[k]=3})}});
+save();
+const ageDays=P=>Math.max(0,daysBetween(P.born||today,today));
+function growSync(P){if(!P.born)P.born=today;P.grew=P.grew||{};P.tr=P.tr||{};const st=stageOf(P.fed);for(let i=0;i<=st;i++)if(P.grew[i]===undefined)P.grew[i]=i?today:P.born}
+function capGrow(P,before){const a=ageDays(P);let m=0;GROWDAYS.forEach((d,i)=>{if(a>=d)m=i});if(m>=3)return;const lim=STAGES[m+1][0]-1;if(P.fed>lim)P.fed=Math.max(before,lim)}
+function growLine(P,st,next){const age=ageDays(P),ag=` · ${plural(age,'day')} old`;if(!next)return' · Fully grown!'+ag;
+  const t=next[0]-P.fed,w=GROWDAYS[st+1]-age,nm=sname(P,st+1);
+  if(w>0&&t<=1)return` · Growing… ${plural(w,'more day')} until ${nm}`+ag;
+  if(w>0)return` · ${plural(t,'more treat')} and ${plural(w,'more day')} until ${nm}`+ag;
+  return` · ${plural(t,'more treat')} until ${nm}`+ag}
+function growPanel(P,st){const age=ageDays(P);
+  return`<p class="how">${esc(P.name)} is <b>${plural(age,'day')} old</b>. Pets grow up with snacks <i>and</i> time: each stage needs enough treats and enough days. Healthy snacks count double!</p>
+  <div class="growrow">${STAGES.map((s,i)=>{const got=i<=st,d=(P.grew||{})[i];return`<div class="gstage${got?' got':''}${i===st?' now':''}"><div class="gpet" style="--gs:${s[2]}">${got?petSVG(P.coat,P.name[0].toUpperCase(),P.ear,P.species):'<span class="gq">?</span>'}</div>
+    <b>${sname(P,i)}</b><small>${got?(d?(i?'Grew up '+fmt(d):'Adopted '+fmt(d)):'✓ Grown'):`${s[0]} treats · day ${GROWDAYS[i]}`}</small><small>📏 ${HEIGHTS[i]} tall</small></div>`}).join('<span class="garrow">→</span>')}</div>`}
+const TRAINMAX=3;
+const trainsLeft=P=>{const t=P.trn&&P.trn.d===today?P.trn.n:0;return Math.max(0,TRAINMAX-t)};
+const trickStars=(P,k)=>Math.min(3,(P.tr||{})[k]||0);
+function tricksPanel(P,st){const left=trainsLeft(P),known=TRICKS.filter(t=>trickStars(P,t[0])>=3).length;
+  return`<p class="how">${esc(P.name)} knows <b>${known} of ${TRICKS.length}</b> tricks. Each new trick needs <b>3 ⭐ training sessions</b>. ${left?`${plural(left,'training session')} left today.`:`${esc(P.name)} is tired from training. Practise again tomorrow!`} Bigger pets can learn harder tricks.</p>
+  <div class="tricklist">${TRICKS.map(([k,n,need,ic])=>{const s=trickStars(P,k),lock=need>st;
+    return`<div class="trick${s>=3?' known':''}"><span class="ti">${ic}</span><b>${n}</b><span class="tstars">${lock?'':'⭐'.repeat(s)+'☆'.repeat(3-s)}</span>${lock?`<button disabled>🔒 ${sname(P,need)}</button>`
+      :s>=3?`<button data-t="${k}">Show off!</button>`:`<button data-tr="${k}" class="go"${left?'':' disabled'}>🎓 Train</button>`}</div>`}).join('')}</div>`}
+function trainTrick(P,t){if(!trainsLeft(P)){toast(`😴 ${esc(P.name)} is tired. Train again tomorrow!`);return}
+  const hard=t[2],zw=[30,25,20,16][hard]||16,period=1700-hard*220;let hits=0,tries=6,z0=0,pos=0,t0=performance.now(),done=false;
+  modal(`<h3>🎓 Training: ${t[3]} ${t[1]}</h3><p class="how">Tap <b>🦴 Treat!</b> when the paw is inside the green zone. Get 3 good ones!</p>
+    <div class="trainpet">${petSVG(P.coat,P.name[0].toUpperCase(),P.ear,P.species)}</div>
+    <div class="tbar"><div class="tzone"></div><b class="tmark">🐾</b></div><p class="tscore" id="tsc"></p>
+    <div class="rbtns"><button id="tgo" class="go">🦴 Treat!</button><button id="tx" class="plain">Stop</button></div>`);
+  const box=modalEl.querySelector('.mbox'),svg=box.querySelector('.pet'),zone=box.querySelector('.tzone'),mark=box.querySelector('.tmark'),sc=document.getElementById('tsc');
+  applyWear(svg,P.wear);
+  const place=()=>{z0=8+Math.random()*(84-zw);zone.style.left=z0+'%';zone.style.width=zw+'%'};place();
+  const show=()=>{sc.textContent=`${'🦴'.repeat(hits)}${'○'.repeat(3-hits)} · ${tries===1?'1 try':tries+' tries'} left`};show();
+  const anim=c=>{svg.classList.remove('happy','t-shake',...TRICKS.map(x=>'t-'+x[0]));void svg.getBoundingClientRect();svg.classList.add(c)};
+  const loop=now=>{if(done||modalEl.hidden){done=true;return}const ph=((now-t0)%(period*2))/period;pos=ph<1?ph*100:(2-ph)*100;mark.style.left=pos+'%';requestAnimationFrame(loop)};requestAnimationFrame(loop);
+  const end=ok=>{done=true;const btns=box.querySelector('.rbtns');
+    if(ok){P.tr[t[0]]=trickStars(P,t[0])+1;P.trn={d:today,n:(P.trn&&P.trn.d===today?P.trn.n:0)+1};P.happy=Math.min(100,P.happy+6);save();mission('train');
+      const learned=P.tr[t[0]]>=3;anim('t-'+t[0]);burst(...mid(svg),learned?['🎓','⭐','🎉']:['⭐','🦴']);
+      const line=learned?`I learned to ${t[1].toLowerCase()}! Thank you, River!`:['Good practice! I am getting better!','Almost got it!','One more session and I will know it!'][rnd(3)];
+      petVoice(P,line);sc.innerHTML=learned?`🎉 <b>${esc(P.name)} learned ${t[1]}!</b>`:`⭐ Great session! ${'⭐'.repeat(P.tr[t[0]])}${'☆'.repeat(3-P.tr[t[0]])}`;
+      if(learned)setTimeout(()=>toast(`🎓 ${esc(P.name)} learned a new trick: ${t[3]} ${t[1]}! Watch for it at the park.`),400)}
+    else sc.innerHTML=`So close! ${esc(P.name)} needs a bit more practice. Try again!`;
+    btns.innerHTML=`${!ok&&trainsLeft(P)?'<button id="tagain" class="go">Try again</button>':''}<button id="tdone">Done</button>`;
+    const ag=document.getElementById('tagain');if(ag)ag.onclick=()=>trainTrick(P,t);document.getElementById('tdone').onclick=()=>{closeModal();render()}};
+  document.getElementById('tgo').onclick=()=>{if(done)return;tries--;const hit=pos>=z0-2&&pos<=z0+zw+2;
+    if(hit){hits++;anim(hits===3?'t-'+t[0]:'happy');burst(...mid(svg),['🦴','✨']);place()}else{anim('t-shake')}
+    show();if(hits>=3)end(true);else if(tries<=0||tries<3-hits)end(false)};
+  document.getElementById('tx').onclick=()=>{done=true;closeModal();render()}}
+const TRICKLINE={sit:'*sits* Good dog? Good dog!',paw:'High five, River! ✋',jump:'Boing! Look how high I can jump!',spin:'Wheee! Round and round!',beg:'Pretty please?',
+  roll:'Ta-da! Did you see that?',bow:'Thank you, thank you! *takes a bow*',dance:'Look at my moves! 🎵',dead:'Bang! … *peeks* … Am I a good actor?'};
+
+// ---- front page & navigation hooks for the new pages
+main.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.mgo){missionGo(b.dataset.mgo);return}
+  if(b.id==='chestBtn'){openChest();return}
+  if(b.dataset.go==='story'){endGame();storyCh=-1;view='story';render();scrollTo({top:0});return}
+  if(b.dataset.go==='reporter'){endGame();view='reporter';render();scrollTo({top:0});return}
+  if(b.dataset.go==='today'){view='today';render();scrollTo({top:0})}});
 
 // ---- parent corner & screen time
 function parentPage(){
