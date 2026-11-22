@@ -422,6 +422,11 @@ textarea[hidden]{display:none}
 .dotsvg #dfill,.dotsvg #dpic{transition:opacity .8s}
 .dot{cursor:pointer}.dot.hit circle:nth-child(2){fill:#2f6b3f}
 .dot.nope{animation:dshake .35s}@keyframes dshake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.countdowns{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:4px 0 22px}#cdtop:empty{display:none}
+.cd{border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:10px 12px;text-align:center;position:relative}
+.cd .cdi{font-size:34px;display:block;line-height:1.1}.cd b{font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:44px;line-height:1;color:var(--accent);display:block}
+.cd p{margin:4px 0 0;font-size:16px;line-height:1.3}.cd .cdt{font-weight:900;font-size:18px}
+.cd.bday{background:#fde2ec}.cd.xmas{background:#e1efdc}.cd.xmas b{color:#2f6b3f}.cd.trip{background:#d9f1f2}.cd.trip b{color:#1b7a8a}
 .bdaybar{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;background:#fde2ec;border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);
   padding:10px 16px;margin:0 0 20px;font-size:19px;text-align:center}
 .bdaybar b{font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:30px;color:var(--accent)}.bdaybar .cake{font-size:30px}
@@ -614,6 +619,7 @@ select{font:inherit;font-size:18px;min-height:48px;border:2px solid var(--ink);b
 </div>
   <button id="bonus">Extra! Bonus pup</button>
 </nav>
+<div id="cdtop" class="wrap"></div>
 <div class="page wrap">
   <main id="main"><div class="msg">Hot off the press… fetching today's pups!</div></main>
   <aside class="side">
@@ -847,7 +853,7 @@ let view='today',all=[];
 S.bonus=S.bonusDay===today?S.bonus||[]:[];S.bonusDay=today;
 
 const TABS={today:'tToday',pet:'tPet',art:'tArt',album:'tAlbum',games:'tGames',favs:'tFavs'};
-function render(){renderView();try{musicSync()}catch(e){}}
+function render(){renderView();try{const c=document.getElementById('cdtop');c.innerHTML=view==='today'?bdayBar():''}catch(e){}try{musicSync()}catch(e){}}
 function renderView(){
   document.body.dataset.view=view;
   for(const[v,id] of Object.entries(TABS))document.getElementById(id).classList.toggle('on',view===v);
@@ -875,7 +881,7 @@ function renderView(){
       (S.bonus.length?`<h2 class="sec">Extra! Extra! Bonus Pups</h2><div class="news">${S.bonus.map(it=>card(it)).join('')}</div>`:'');
     let extras='',top='';try{extras=newsroomHTML()+funnyPages()+artFront()+lettersHTML()}catch(e){window.__showErr&&window.__showErr('front page: '+e.message)}
     try{top=missionsHTML()+scoopHTML()}catch(e){window.__showErr&&window.__showErr('missions: '+e.message)}
-    main.innerHTML=`<div class="readbar"><button id="readPaper" class="sayit">🔊 Chief, read me today's paper!</button></div>`+bdayBar()+top+lead+extras;
+    main.innerHTML=`<div class="readbar"><button id="readPaper" class="sayit">🔊 Chief, read me today's paper!</button></div>`+top+lead+extras;
     try{setupLetters()}catch(e){window.__showErr&&window.__showErr('letters: '+e.message)}
   }
   main.querySelectorAll('.card img').forEach(im=>im.onerror=()=>im.closest('.card').remove());
@@ -1268,7 +1274,8 @@ function edition(){const md=today.slice(5);
     '12-31':['🎆',"New Year's Eve Edition",'Chief Barker is staying up late tonight. Maybe.','party']};
   const x=E[md];return x?{e:x[0],t:x[1],m:x[2],hat:x[3]}:null}
 const ED=edition();
-if(!ED)setTimeout(()=>{const b=bdayDays(),el=document.getElementById('bubble');if(el&&b.n)el.textContent=`Only ${b.n} sleeps until River's birthday! 🎂 Tap me!`},0);
+if(!ED)setTimeout(()=>{const b=bdayDays(),t=tripDays(),el=document.getElementById('bubble');if(!el)return;
+  if(t>0)el.textContent=`Only ${t} sleep${t===1?'':'s'} until the Caribbean! 🏝️ Tap me!`;else if(b.n)el.textContent=`Only ${b.n} sleeps until River's birthday! 🎂 Tap me!`},0);
 
 // ---- wardrobe (drawn in Chief Barker's 300×300 coordinates)
 const WEAR={
@@ -1801,6 +1808,8 @@ function readPaper(btn){
     S.set.feeds&&all.length?`Today's top story: ${hl(all[0])}. ${all[0].who.charAt(0).toUpperCase()+all[0].who.slice(1)} ${all[0].cap.charAt(0).toLowerCase()+all[0].cap.slice(1)}`:'',
     `Did you know? ${document.getElementById('fact').textContent}`,`The weather report says: ${document.getElementById('weather').textContent}.`,
     `Now, the joke of the day. ${jk[0]}`,jk[1],`In the funny pages: ${title}. ${panels.map(x=>x[0]).join(' ')}`,
+    (()=>{const t=tripDays();return t>0?`Pack your sunscreen! Only ${t} more sleep${t===1?'':'s'} until the big trip to the Caribbean!`:t===0?'Today is the day! Have a wonderful trip to the Caribbean, River!':''})(),
+    (()=>{const x=xmasDays();return x>0?`And only ${x} more sleep${x===1?'':'s'} until Christmas!`:''})(),
     (()=>{const b=bdayDays();return b.n?`Big news! Only ${b.n} more sleep${b.n===1?'':'s'} until River's birthday on ${b.label}!`:''})(),
     S.gallery.length?`In the art pages, River made a wonderful picture. ${review(S.gallery[0])}`:'',
     (()=>{const st=storyState(),se=SEASONS[st.s];return`In the Daily Serial: ${se.t}, chapter ${st.n}. ${se.ch[st.n-1].t}. What will happen next?`})(),
@@ -1810,7 +1819,7 @@ function readPaper(btn){
 
 // ---- Inside Today (sidebar contents list)
 function jumpTo(sel){const go=()=>{const el=document.querySelector(sel);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})};if(view!=='today'){view='today';render();setTimeout(go,120)}else go()}
-{const INSIDE=[['🗒️',"Chief's Missions",'.missions'],['⭐','Pup of the Day','.scoop, .potd, .leadart, .msg'],['📖','The Daily Serial','.serialbox'],['📝','Cub Reporter Desk','.repbox'],['🎂',"River's birthday countdown",'.bdaybar'],['😂','The Funny Pages','.comic'],['🎨','The Art Page','.artsec'],
+{const INSIDE=[['🗒️',"Chief's Missions",'.missions'],['⭐','Pup of the Day','.scoop, .potd, .leadart, .msg'],['📖','The Daily Serial','.serialbox'],['📝','Cub Reporter Desk','.repbox'],['⏳','Countdowns','.countdowns'],['😂','The Funny Pages','.comic'],['🎨','The Art Page','.artsec'],
   ['💌','Letters to the Editor','.letters'],['🧩','Puzzles & games',null],['🐾','Visit my pets',null]];
  const ul=document.getElementById('insideList');
  if(ul){ul.innerHTML=INSIDE.map(([i,n,sel],k)=>`<li><button data-in="${k}">${i} ${n}</button></li>`).join('');
@@ -2405,8 +2414,18 @@ function artGallery(){const w=artWrap(`${artBack()}<h2 class="sec">River's Galle
 // ---- front page: birthday countdown and the art pages
 function bdayDays(){const md=S.set.bday||'06-15',[m,d]=md.split('-').map(Number),now=new Date(),t0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
   let t=new Date(now.getFullYear(),m-1,d);if(t<t0)t=new Date(now.getFullYear()+1,m-1,d);return{n:Math.round((t-t0)/864e5),label:t.toLocaleDateString(undefined,{month:'long',day:'numeric'})}}
-function bdayBar(){const b=bdayDays();if(!b.n)return'<div class="bdaybar">🎉 <b>Today is River\'s birthday!</b> Happy birthday from everyone at the paper! 🎂</div>';
-  return`<div class="bdaybar"><span class="cake">🎂</span><span><b>${b.n}</b> sleep${b.n===1?'':'s'} until River's birthday on ${b.label}!${b.n<=7?' It\'s almost birthday week! 🎈':''}</span></div>`}
+const TRIPDAY='2026-12-19';
+function daysTo(m,d,yr){const now=new Date(),t0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  let t=new Date(yr||now.getFullYear(),m-1,d);if(!yr&&t<t0)t=new Date(now.getFullYear()+1,m-1,d);return Math.round((t-t0)/864e5)}
+const xmasDays=()=>daysTo(12,25);
+const tripDays=()=>{const[y,m,d]=TRIPDAY.split('-').map(Number);return daysTo(m,d,y)};
+function bdayBar(){const b=bdayDays(),x=xmasDays(),t=tripDays(),sl=n=>`sleep${n===1?'':'s'}`;
+  const card=(cls,ic,n,txt,today)=>`<div class="cd ${cls}"><span class="cdi">${ic}</span>${today?`<p class="cdt">${today}</p>`:`<b>${n}</b><p>${sl(n)} ${txt}</p>`}</div>`;
+  const cards=[];
+  if(t>=0)cards.push(card('trip','🏝️',t,'until the Caribbean trip on December 19!',t===0?'Today is the day! Have an amazing trip to the Caribbean! ☀️🌊':''));
+  cards.push(card('xmas','🎄',x,`until Christmas!${x<=24&&x>0?' 🎅':''}`,x===0?'Merry Christmas, River! 🎁':''));
+  cards.push(card('bday','🎂',b.n,`until River's birthday on ${b.label}!${b.n<=7?' 🎈':''}`,b.n===0?"Today is River's birthday! Happy birthday from everyone at the paper! 🎉":''));
+  return`<div class="countdowns">${cards.join('')}</div>`}
 function artFront(){const g=S.gallery[0],pid=dailyAt(allPageIds(),9,DAYN);
   return`<h2 class="sec artsec">The Art Page</h2><div class="duo">
     <section class="box"><h3>Art of the Day</h3>${g?`<div class="gframe big"><img src="${thumbSrc(g)}" alt="River's art"><b>${esc(g.title||'Art by River')}</b><small>by River · ${fmt(g.d)}</small></div><p class="arev">“${esc(review(g))}” <span>— Chief Barker</span></p>
