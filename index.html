@@ -463,7 +463,7 @@ body[data-view=art] h1{font-size:clamp(30px,5vw,54px);margin:8px 0 0}
 .feeders{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 #gbox .feeder{display:grid;justify-items:center;gap:4px;padding:10px;background:var(--card)!important;color:var(--ink)!important;min-height:0}.feeder .dog{max-width:130px;margin:0}
 .spell{display:grid;gap:14px;justify-items:center}.spic{font-size:90px;line-height:1}
-.slots{display:flex;gap:8px}.slots span{width:54px;height:62px;border-bottom:4px solid var(--ink);display:grid;place-items:center;font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:40px}
+.schbig{font-size:clamp(28px,8vw,72px)!important}.slots{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}.slots span{width:clamp(30px,10vw,54px);height:62px;border-bottom:4px solid var(--ink);display:grid;place-items:center;font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:40px}
 .slots span.ok{color:#2f6b3f}.slots span.show{color:var(--accent)}
 .tiles{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}#gbox .tiles button{width:62px;height:62px;font-size:32px;padding:0;background:#fffaf0!important;color:var(--ink)!important}
 #gbox .tiles button:disabled{opacity:.25}.tiles button.nope{animation:dshake .35s}#gbox #sayw{background:var(--card)!important;color:var(--ink)!important}
@@ -567,6 +567,7 @@ body[data-view=art] h1{font-size:clamp(30px,5vw,54px);margin:8px 0 0}
 .pin{width:13%;height:8%;transform:translate(-50%,-50%);display:block}.pin i{position:absolute;width:38%;left:-26%;top:-62%;aspect-ratio:auto}
 .pin i img{height:auto}.pin b{display:none}.pin.locked b{display:grid;place-items:center;position:absolute;inset:8% 4%;margin:0;font-size:clamp(9px,1.4vw,13px);border-radius:14px}
 .pin.locked i{filter:grayscale(1) brightness(.8) drop-shadow(0 2px 3px rgba(0,0,0,.6))}.pin:not(.locked):active{transform:translate(-50%,-50%) scale(.95)}
+.pin{min-width:60px;min-height:48px}.wpet{min-width:48px}
 .world.finding .pin,.world.finding .wpets{display:none}.world.finding{cursor:crosshair;box-shadow:0 0 0 4px #c8281a,0 10px 30px rgba(0,0,0,.4)}
 .bebelayer{position:absolute;inset:0;z-index:5;pointer-events:none}.world:not(.finding) .bebelayer .bbimg:not(.got){display:none}
 .bbimg{position:absolute;height:auto;pointer-events:auto;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35));-webkit-user-drag:none;user-select:none}
@@ -709,6 +710,7 @@ select{font:inherit;font-size:18px;min-height:48px;border:2px solid var(--ink);b
 @media(max-width:600px){.panel{min-height:180px;padding:8px}.say{font-size:13px;padding:6px 8px}.sdwrap{grid-template-columns:minmax(0,1fr)}
 }
 @media(min-width:744px){.say{font-size:19px}.toast{font-size:20px}.disc{font-size:56px}.album{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}
+@media(max-width:600px){.tabtiles{grid-template-columns:repeat(3,minmax(0,1fr))!important}nav .tile2{min-height:84px!important;font-size:13px!important}}
 @media(prefers-reduced-motion:reduce){.dog,.dog *,.pawfx,.card{animation:none!important}}
 </style>
 </head>
@@ -799,8 +801,9 @@ const today=day(new Date());
 const yest=(()=>{const d=new Date();d.setDate(d.getDate()-1);return day(d)})();
 let S={};try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){try{const raw=localStorage.getItem(KEY);if(raw)localStorage.setItem(KEY+'-rescue',raw)}catch(_){}}
 S.favs=S.favs||[];
-S.set=Object.assign({bday:'',limit:0,feeds:true,bonus:5,voice:true,petVoice:true},S.set||{});
+S.set=Object.assign({bday:'',limit:0,feeds:true,bonus:5,voice:true,petVoice:true},S.set||{});if(S.feedsFix&&!S.feedsBack){S.set.feeds=true;S.feedsBack=1}
 if(!S.set.bday)S.set.bday='06-15';
+
 if(!S.bdayFix){if(S.set.bday==='06-13')S.set.bday='06-15';S.bdayFix=1}
 // ---- fresh content every day (no repeats until a whole list has been used)
 const pagehead=(tab,title,sub)=>{const im=document.querySelector('#'+tab+' img');return`<div class="pagehead">${im?`<img src="${im.src}" alt="">`:''}<div><h2>${title}</h2>${sub?`<p>${sub}</p>`:''}</div></div>`};
@@ -865,7 +868,8 @@ function comicOfDay(){const r=seeded(DAYN*31+5),pick=a=>a[Math.floor(r()*a.lengt
 let VOICE=null;
 const voiceScore=v=>{const n=(v.name+' '+(v.voiceURI||'')).toLowerCase();let s=0;
   if(/en[-_]gb/i.test(v.lang))s+=50;else if(/^en/i.test(v.lang))s+=20;else return -1;
-  if(/premium/.test(n))s+=45;else if(/enhanced|neural|natural/.test(n))s+=35;else if(/siri/.test(n))s+=30;
+  if(/google/.test(n))s+=32;if(/network|online/.test(n))s+=8;
+  if(/premium/.test(n))s+=45;else if(/enhanced|neural|natural/.test(n))s+=35;else if(/siri/.test(n))s+=30;else if(/en-gb-x|en-us-x|-network|-local/.test(n))s+=10;
   if(/eloquence|novelty|bad news|bells|bubbles|cellos|whisper|zarvox|trinoids|albert|bahh|boing|jester|organ|superstar|wobble|grandpa|grandma|rocko|shelley|\bflo\b|\breed\b|sandy|eddy|\bfred\b|junior|ralph|kathy|good news|hysterical|deranged|pipe|princess|vicki|victoria/.test(n))return -1;
   if(/compact/.test(n))s-=10;
   if(/arthur|daniel|oliver|george|harry|jamie|malcolm|ryan|thomas/.test(n))s+=8;
@@ -881,7 +885,11 @@ function sayQueue(parts){if(!S.set.voice||!('speechSynthesis' in window))return 
 function speak(t){sayQueue([t])}
 let saveFallback=null;
 let lastSafe=0;
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){if(saveFallback)saveFallback()}if(autoSafeHook)autoSafeHook()};
+let saveT=0,noFlush=false,lastAuto=0;
+const flush=()=>{clearTimeout(saveT);saveT=0;if(noFlush)return;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){if(saveFallback)saveFallback()}if(autoSafeHook&&Date.now()-lastAuto>30000){lastAuto=Date.now();autoSafeHook()}};
+const save=()=>{if(!saveT)saveT=setTimeout(flush,400)};
+addEventListener('pagehide',()=>{if(saveT)flush()});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&saveT)flush()});
 let autoSafeHook=null;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -972,7 +980,7 @@ const TABS={world:'tWorld',today:'tToday',pet:'tPet',art:'tArt',album:'tAlbum',g
 function render(){renderView();try{const c=document.getElementById('cdtop');c.innerHTML=view==='today'?bdayBar():''}catch(e){}try{musicSync()}catch(e){}}
 function renderView(){
   document.body.dataset.view=view;
-  {const bv=document.getElementById('bankview'),pg=document.querySelector('.page');if(bv)bv.hidden=view!=='bank';if(pg)pg.hidden=view==='bank';if(view!=='bank')bankOpen=false}
+  {const bv=document.getElementById('bankview'),pg=document.querySelector('.page');if(bv)bv.hidden=view!=='bank';if(pg)pg.hidden=view==='bank';if(view!=='bank'){bankOpen=false;clearTimeout(vaultT)}}
   for(const[v,id] of Object.entries(TABS))document.getElementById(id).classList.toggle('on',view===v||(v==='world'&&['school','spring','chat','trip','cave','peak'].indexOf(view)>=0));
   document.getElementById('tParent').classList.toggle('on',view==='parent');
   document.querySelector('#tPet span').textContent=`My pup · 🦴 ${S.treats}`;
@@ -1894,22 +1902,41 @@ function setupPark(){
 // ---- backup & restore (Parent corner)
 function backupHTML(){return`<h3 class="psec">Backup River's progress</h3>
   <p class="small">Last backup: <b>${S.lastBackup?fmt(S.lastBackup):'never'}</b>. A backup keeps River's pets, stickers, levels, scrapbook, letters and settings safe if Safari's data is cleared or you move to a new iPad.</p>
-  <div class="rbtns left"><button id="bkDown">💾 Save backup file</button><label class="filebtn">📂 Restore from file<input type="file" id="bkFile" accept=".json,application/json"></label><button id="bkCode">📋 Copy backup code</button></div>
+  <div class="rbtns left"><button id="bkDown">💾 Save backup file</button><label class="filebtn">📂 Restore from file<input type="file" id="bkFile" accept=".json,application/json"></label><button id="bkCode">📋 Copy backup code</button><button id="bkShare">📤 Share backup (full, with art)</button></div>
   <textarea id="bkText" rows="3" placeholder="A backup code appears here. Or paste a code here to restore it."></textarea>
   <div class="rbtns left"><button id="bkPaste">Restore from code</button></div><p class="err" id="bkMsg"></p>`}
 function setupBackup(){const q=id=>document.getElementById(id),msg=t=>q('bkMsg').textContent=t;
   const data=lite=>{const o=JSON.parse(JSON.stringify(S));if(lite){(o.letters||[]).forEach(l=>l.img='');o.stkImg={};o.items=[];o.day='';o.gallery=(o.gallery||[]).filter(g=>g.type==='colour');o.designs={};o.album=[]}return o};
-  const restore=obj=>{const d=obj&&obj.data?obj.data:obj;
-    if(!d||typeof d!=='object'||!('lv' in d||'pets' in d||'treats' in d||'favs' in d)){msg("That doesn't look like a River's Daily Doggo backup.");return}
+  const cleanBackup=d0=>{if(!d0||typeof d0!=='object'||Array.isArray(d0))return null;
+    if(!('lv' in d0||'pets' in d0||'treats' in d0||'favs' in d0))return null;
+    let o;try{o=JSON.parse(JSON.stringify(d0))}catch(e){return null}
+    const isO=x=>x&&typeof x==='object'&&!Array.isArray(x);
+    for(const k of ['pets','favs','letters','gallery','reports','album'])if(o[k]!==undefined&&!Array.isArray(o[k]))return null;
+    for(const k of ['lv','set','stk','color','designs','dots','rare','school','bebe','pack','week','mis'])if(o[k]!==undefined&&!isO(o[k]))return null;
+    if(o.treats!==undefined&&!(typeof o.treats==='number'&&isFinite(o.treats)&&o.treats>=0))return null;
+    if(o.pets){if(!o.pets.every(p=>isO(p)&&typeof p.name==='string'&&p.name))return null;
+      o.pets=o.pets.slice(0,4);o.pets.forEach(p=>{if(!SPECIES[p.species])p.species='dog';if(!SPECIES[p.species][1][p.coat])p.coat=SPECIES[p.species][2];
+        p.fed=isFinite(+p.fed)?Math.max(0,+p.fed):0;p.happy=isFinite(+p.happy)?Math.min(100,Math.max(0,+p.happy)):70;p.name=p.name.slice(0,14);
+        if(!isO(p.wear))p.wear={};if(!isO(p.tr))p.tr={};if(!p.seen)p.seen=today})}
+    if(o.favs)o.favs=o.favs.filter(f=>isO(f)&&typeof f.src==='string');
+    if(o.letters)o.letters=o.letters.filter(l=>isO(l)).map(l=>({d:String(l.d||today),text:typeof l.text==='string'?l.text:'',img:typeof l.img==='string'&&l.img.indexOf('data:image/')===0?l.img:''}));
+    if(o.gallery)o.gallery=o.gallery.filter(isO);if(o.reports)o.reports=o.reports.filter(isO);if(o.album)o.album=o.album.filter(isO);
+    if(o.petIdx!==undefined)o.petIdx=Math.max(0,Math.min(+o.petIdx||0,Math.max(0,(o.pets||[]).length-1)));
+    return o};
+  const restore=obj=>{let d=obj&&obj.data?obj.data:obj;d=cleanBackup(d);
+    if(!d){msg("That doesn't look like a River's Daily Doggo backup.");return}
     q('pconf').innerHTML=`<div class="confirm"><p><b>Restore this backup?</b> It replaces everything currently on this iPad${d.pets&&d.pets.length?` (backup has: ${d.pets.map(p=>esc(p.name)).join(', ')})`:''}.</p>
       <div class="rbtns left"><button id="ryes" class="danger">Yes, restore it</button><button id="rno">Cancel</button></div></div>`;
     q('rno').onclick=()=>q('pconf').innerHTML='';
-    q('ryes').onclick=()=>{try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){msg('Could not restore: storage is full or blocked.');return}location.reload()}};
+    q('ryes').onclick=()=>{noFlush=true;clearTimeout(saveT);try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){noFlush=false;msg('Could not restore: storage is full or blocked.');return}location.reload()}};
   q('bkDown').onclick=()=>{const blob=new Blob([JSON.stringify({app:'rivers-daily-doggo',v:1,saved:today,data:data(false)})],{type:'application/json'});
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`rivers-daily-doggo-backup-${today}.json`;document.body.appendChild(a);a.click();a.remove();
     setTimeout(()=>URL.revokeObjectURL(a.href),5000);S.lastBackup=today;save();msg('Backup file saved! On iPad, look in the Files app under Downloads.')};
   q('bkFile').onchange=()=>{const f=q('bkFile').files[0];if(!f)return;const r=new FileReader();
     r.onload=()=>{try{restore(JSON.parse(r.result))}catch(e){msg("Couldn't read that file.")}};r.readAsText(f)};
+  q('bkShare').onclick=async()=>{const json=JSON.stringify({app:'rivers-daily-doggo',v:1,saved:today,data:data(false)}),name=`rivers-daily-doggo-backup-${today}.json`;
+    try{const f=new File([json],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:"River's Daily Doggo backup"});S.lastBackup=today;save();msg('Backup shared!');return}}catch(e){if(e&&e.name==='AbortError')return}
+    q('bkDown').click()};
   q('bkCode').onclick=async()=>{const code='RDD1.'+btoa(unescape(encodeURIComponent(JSON.stringify(data(true)))));q('bkText').value=code;S.lastBackup=today;save();
     try{await navigator.clipboard.writeText(code);msg('Backup code copied! Paste it somewhere safe, like Notes or an email to yourself.')}
     catch(e){q('bkText').select();msg('Select the code above and copy it somewhere safe.')}};
@@ -2126,7 +2153,7 @@ saveFallback=()=>saveSafe();
 autoSafeHook=()=>autoSafe();
 const SAFEKEY=KEY+'-autosave';
 function autoSafe(){if(!S.pets||!S.pets.length)return;try{const keep={};['pets','petIdx','treats','lv','stk','favs','set','streak','last','first','dots','lessonsDone','designs','wear','best','letters','rare','story','reports','week','mis','bebe','school','visits','pack','storyN']
-  .forEach(k=>{if(S[k]!==undefined)keep[k]=S[k]});(keep.letters||[]).forEach(l=>l.img='');localStorage.setItem(SAFEKEY,JSON.stringify({saved:today,data:keep}))}catch(e){}}
+  .forEach(k=>{if(S[k]!==undefined)keep[k]=JSON.parse(JSON.stringify(S[k]))});(keep.letters||[]).forEach(l=>l.img='');localStorage.setItem(SAFEKEY,JSON.stringify({saved:today,data:keep}))}catch(e){}}
 function offerRescue(){if(S.pets&&S.pets.length)return;let b=null;try{b=JSON.parse(localStorage.getItem(SAFEKEY))}catch(e){}
   if(!b||!b.data||!b.data.pets||!b.data.pets.length)return;const names=b.data.pets.map(p=>esc(p.name)).join(', ');
   setTimeout(()=>{modal(`<div class="medal">🐾</div><h3>We found River's pets!</h3><p>A safety copy from <b>${fmt(b.saved)}</b> has <b>${names}</b>. Bring them back?</p>
@@ -2450,7 +2477,7 @@ function artDot(){const[ic,name,fill,pts]=DOTS[dotShape];let next=1;
   const w=artWrap(`<div class="studio"><div class="shead">${artBack('dots','Dot-to-dot')}<h2>Mystery picture</h2><div class="sacts"><button id="dsnap">📸 Photo</button></div></div><div class="abar"><p id="dtext">Tap dot number <b>1</b> to start!</p></div>
     <div class="cwrap2 csv" style="aspect-ratio:4/3;--ar:1.3333"><svg class="dotsvg" viewBox="0 0 400 300"><polygon id="dfill" points="${pts.map(p=>p.join(',')).join(' ')}" fill="${fill}" opacity="0"/><polyline id="dline" points="" fill="none" stroke="#1f1a14" stroke-width="3" stroke-linejoin="round"/>
       <text id="dpic" x="200" y="165" text-anchor="middle" font-size="70" opacity="0">${ic}</text>
-      ${pts.map(([x,y],i)=>`<g class="dot" data-n="${i+1}"><circle cx="${x}" cy="${y}" r="16" fill="transparent"/><circle cx="${x}" cy="${y}" r="5" fill="#1f1a14"/><text x="${x+9}" y="${y-8}" font-size="13" font-weight="700" fill="#a8321f">${i+1}</text></g>`).join('')}</svg></div></div>`);
+      ${pts.map(([x,y],i)=>`<g class="dot" role="button" tabindex="0" aria-label="Dot ${i+1}" data-n="${i+1}"><circle cx="${x}" cy="${y}" r="16" fill="transparent"/><circle cx="${x}" cy="${y}" r="5" fill="#1f1a14"/><text x="${x+9}" y="${y-8}" font-size="13" font-weight="700" fill="#a8321f">${i+1}</text></g>`).join('')}</svg></div></div>`);
   const line=w.querySelector('#dline'),txt=w.querySelector('#dtext'),done=[];
   w.querySelector('#dsnap').onclick=()=>{const sv=w.querySelector('.dotsvg').outerHTML.replace('<svg','<svg xmlns="http://www.w3.org/2000/svg"');snapPhoto(svgURI(sv),next>pts.length?'Dot-to-dot: '+name:'Dot-to-dot',w.querySelector('.cwrap2'))};
   const svg=w.querySelector('.dotsvg');
@@ -3098,7 +3125,7 @@ function worldPage(){clearInterval(wanderT);clearTimeout(bebeT);const l=wlevel()
       <button id="bebeGo" class="bebebtn${found?' done':' go'}"><img src="${WIMG.bebe}" alt=""><span>${found?'✅ You found Bebe today!<small>She hides somewhere new tomorrow</small>':'🔍 Find Bebe!<small>She is hiding somewhere on the map</small>'}</span></button>
       <details class="wtip"><summary>How do I earn explorer points?</summary><p>📰 Each day you visit (+10) · 🎮 Pass a new game level (+10) · 📖 Read a serial chapter (+20) · 📝 Write a story (+15) · 🎨 Save art (+5) · 🎓 Teach a trick (+5) · 🔍 Find Bebe (+10) · 📚 Right answers at School (+1)</p></details></div>
     <div class="world" id="world"><img class="wmap" src="${WIMG.map}" alt="Puppy World map" draggable="false">
-      ${SPOTS.map(([id,ic,n,need,x,y])=>`<button class="pin${l<need?' locked':''}" data-go="${id}" style="left:${x}%;top:${y}%"><i><img src="${WIMG[ic]}" alt=""></i><b>${l<need?'🔒 Level '+need:n}</b></button>`).join('')}
+      ${SPOTS.map(([id,ic,n,need,x,y])=>`<button class="pin${l<need?' locked':''}" aria-label="${l<need?n+' (locked, level '+need+')':n}" data-go="${id}" style="left:${x}%;top:${y}%"><i><img src="${WIMG[ic]}" alt=""></i><b>${l<need?'🔒 Level '+need:n}</b></button>`).join('')}
       <div class="wpets">${S.pets.map((P,i)=>`<button class="wpet" data-wp="${i}" style="left:43%;top:52%">${petSVG(P.coat,P.name[0].toUpperCase(),P.ear,P.species)}<i>${esc(P.name)}</i></button>`).join('')}</div>
       <div class="bebelayer"></div></div>
     <p class="how" id="whow" style="text-align:center">Tap a place to visit it. Tap a pet to say hi!</p>`;
@@ -3146,7 +3173,7 @@ function bebeHint(){const W=document.getElementById('world'),h=W&&W.querySelecto
   const sp=nearestSpot(b.x,b.y);const msg=n===1?'Bebe is somewhere inside the glowing circle!':n===2?`Getting warmer! Bebe is near ${sp[2]}.`:'Super close now! Look right in the middle of the circle.';
   toast('💡 '+msg);speak(msg)}
 function bebeTap(e){const W=document.getElementById('world'),r=W.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100,b=bebeToday();
-  const hitR=Math.max(3.6,b.size*.75),dx=x-b.x,dy=(y-b.y)*(r.height/r.width);
+  const hitR=Math.max(7.5,b.size*.9),dx=x-b.x,dy=(y-b.y)*(r.height/r.width);
   if(e.target.classList.contains('bbimg')||Math.sqrt(dx*dx+dy*dy)<=hitR){foundBebe(e);return}
   S.bebe.miss=(S.bebe.miss||0)+1;save();const m=document.createElement('span');m.className='notbebe';m.textContent='🐾';m.style.left=x+'%';m.style.top=y+'%';W.appendChild(m);setTimeout(()=>m.remove(),900);
   if(S.bebe.miss%4===0){const h=document.getElementById('bebeHint');if(h)h.classList.add('go');toast(['Not there! Keep looking. 👀','Hmm, not in that spot! Want a hint?','Bebe is a sneaky pup! Try the 💡 Hint button.'][rnd(3)])}}
@@ -3185,7 +3212,7 @@ function scMathQ(lv){let a,b,op,ans;switch(lv){case 1:a=srr(1,4);b=srr(1,5-a);op
   case 4:a=srr(5,15);b=srr(1,20-a);op='+';break;case 5:a=srr(10,20);b=srr(1,a);op='−';break;case 6:if(rnd(2)){a=srr(10,40);b=srr(1,50-a);op='+'}else{a=srr(15,50);b=srr(1,a);op='−'}break;
   case 7:if(rnd(2)){a=srr(20,80);b=srr(5,100-a);op='+'}else{a=srr(30,100);b=srr(5,a);op='−'}break;case 8:a=[2,5,10][rnd(3)];b=srr(1,10);op='×';break;case 9:a=srr(2,10);b=srr(2,10);op='×';break;
   default:b=srr(2,10);ans=srr(2,10);a=b*ans;op='÷'}
-  ans=op==='+'?a+b:op==='−'?a-b:op==='×'?a*b:a/b;const opts=[ans];while(opts.length<4){const d=ans+(rnd(2)?1:-1)*srr(1,Math.max(2,Math.ceil(ans*.3)));if(d>=0&&opts.indexOf(d)<0)opts.push(d)}
+  ans=op==='+'?a+b:op==='−'?a-b:op==='×'?a*b:a/b;const opts=[ans];for(let g=0;opts.length<4&&g<200;g++){const d=ans+(rnd(2)?1:-1)*srr(1,Math.max(3,Math.ceil(ans*.3)));if(d>=0&&opts.indexOf(d)<0)opts.push(d)}for(let d=0;opts.length<4;d++)if(opts.indexOf(ans+d+1)<0)opts.push(ans+d+1);
   const pic=lv<=2?`<div class="mpic">${'🐶'.repeat(a)} <b>${op}</b> ${'🐶'.repeat(b)}</div>`:'';
   return{q:`${a} ${op} ${b} = ?`,say:`What is ${a} ${({'+':'plus','−':'minus','×':'times','÷':'divided by'})[op]} ${b}?`,pic,ans:String(ans),opts:shuffle(opts.map(String))}}
 function scWords(lv){const own=(S.set.spell||[]).filter(Boolean);return own.length?own.map(w=>[w,'📝']):SCSPELL[Math.min(6,lv)]}
@@ -3204,7 +3231,7 @@ function schoolQ(){const k=SCH.k,lv=S.school.lv[k];if(SCH.n>=SCH.total)return sc
   const head=`<button class="abk" id="scBack">← Puppy School</button><div class="schq box"><p class="kicker">${SCSUBJ.find(s=>s[0]===k)[2]} · Level ${lv} · Question ${SCH.n+1} of ${SCH.total} · ⭐ ${SCH.good}</p>`;
   const next=ok=>{if(ok){SCH.good++;S.school.correct++;scYay()}else scOops();S.school.total++;save();SCH.n++;setTimeout(()=>{if(view==='school'&&SCH)schoolQ()},ok?900:1700)};
   const back=()=>{document.getElementById('scBack').onclick=()=>{SCH=null;schoolPage()}};
-  if(k==='math'){const q=scMathQ(lv);main.innerHTML=head+`${q.pic}<p class="schbig">${q.q}</p><div class="row"><button id="scSay">🔊</button></div><div class="schopts">${q.opts.map(o=>`<button data-o="${o}">${o}</button>`).join('')}</div></div>`;
+  if(k==='math'){const q=scMathQ(lv);main.innerHTML=head+`${q.pic}<p class="schbig">${q.q}</p><div class="row"><button id="scSay" aria-label="Hear the question">🔊</button></div><div class="schopts">${q.opts.map(o=>`<button data-o="${o}">${o}</button>`).join('')}</div></div>`;
     document.getElementById('scSay').onclick=()=>speak(q.say);
     main.querySelector('.schopts').onclick=e=>{const b=e.target.closest('[data-o]');if(!b||SCH.lock)return;SCH.lock=1;const ok=b.dataset.o===q.ans;b.classList.add(ok?'right':'wrong');
       if(!ok)main.querySelector(`[data-o="${q.ans}"]`).classList.add('right');setTimeout(()=>{SCH.lock=0},800);next(ok)};back()}
@@ -3378,7 +3405,7 @@ setTimeout(()=>showHello(false),1400);
 
 
 // ---- Bank tab: River's Money Monsters, kept in its own frame with its own saved data
-let bankFrame=null,bankOpen=false;
+let bankFrame=null,bankOpen=false,vaultT=0;
 function bankLoad(box){if(bankFrame)return;
   try{const b64=document.getElementById('mmsrc').textContent.trim(),bin=atob(b64),u=new Uint8Array(bin.length);
     for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);const html=new TextDecoder('utf-8').decode(u);
@@ -3407,7 +3434,7 @@ function vaultScreen(ui){const setup=!S.set.vault;let v='',first='',fails=0,busy
     turn(720);setTimeout(()=>d.classList.add('unbolt'),700);setTimeout(()=>{d.classList.add('open');try{SFX.ding()}catch(e){}},1300);
     setTimeout(()=>{try{burst(innerWidth/2,innerHeight/2,['💰','🪙','✨','💎'])}catch(e){}},1500);
     if(!setup)speak(['Welcome to your vault, River!','Vault open! Your money monsters are waiting.','Access granted! Hello, River!'][rnd(3)]);
-    setTimeout(()=>{bankOpen=true;const box=document.getElementById('bankbox');bankLoad(box);ui.hidden=true;box.hidden=false;box.classList.remove('vin');void box.offsetWidth;box.classList.add('vin');scrollTo({top:0})},2300)};
+    vaultT=setTimeout(()=>{if(view!=='bank')return;bankOpen=true;const box=document.getElementById('bankbox');bankLoad(box);ui.hidden=true;box.hidden=false;box.classList.remove('vin');void box.offsetWidth;box.classList.add('vin');scrollTo({top:0})},2300)};
   const enter=()=>{if(v.length<4||busy)return;
     if(setup){if(!first){first=v;v='';dots();turn(-90);msg('Great! Now type the same code again to lock it in.');return}
       if(v!==first){first='';wrong("Those didn't match. Let's start again: pick 4 numbers.");return}
@@ -3438,7 +3465,7 @@ function parentPage(){
       <small>Turn off to hide the automatic dog feeds. Games, puzzles, the pup and the funny pages still work.</small></label>
   </div>
   <p class="pstats">Treats: ${S.treats} · Stickers: ${STK.filter(s=>S.stk[s[0]]).length}/${STK.length} · Pups: ${S.pets.length?S.pets.map(p=>esc(p.name)).join(', '):'none adopted yet'} · Letters sent: ${S.letters.length}</p>
-  ${backupHTML()}<h3 class="psec">Other</h3>
+  ${backupHTML()}<p class="small"><b>Note:</b> The bank vault code and parent code are a casual gate to keep little fingers out, not real security. They are stored on this device and a determined person could get around them.</p><h3 class="psec">Other</h3>
   <div class="rbtns left"><button id="ppin">🔒 Change parent code</button><button id="pvault">🏦 Reset River's bank vault code</button><button id="ptreat">Give River 5 treats</button><button id="preset" class="danger">Reset all progress…</button></div><div id="pconf"></div></div>`;
   const q=id=>document.getElementById(id);
   const setB=()=>{S.set.bday=q('pbm').value&&q('pbd').value?q('pbm').value+'-'+q('pbd').value:'';save()};
@@ -3455,8 +3482,12 @@ function parentPage(){
   q('ppin').onclick=()=>setPin(()=>{view='parent';render()},()=>{view='parent';render()});
   q('ptreat').onclick=()=>{S.treats+=5;save();toast('🦴 +5 treats from a grown-up!');parentPage()};
   q('preset').onclick=()=>{q('pconf').innerHTML=`<div class="confirm"><p><b>Are you sure?</b> This clears River's levels, stickers, pup, scrapbook, letters and settings on this iPad.</p>
+    <label class="chk"><input type="checkbox" id="pmm"><span>Also erase the Bank (Money Monsters) data</span><small>Leave unticked to keep River's bank savings.</small></label>
     <div class="rbtns left"><button id="pyes" class="danger">Yes, reset everything</button><button id="pno">Cancel</button></div></div>`;
-    q('pno').onclick=()=>q('pconf').innerHTML='';q('pyes').onclick=()=>{try{localStorage.removeItem(KEY)}catch(e){}location.reload()}};
+    q('pno').onclick=()=>q('pconf').innerHTML='';q('pyes').onclick=()=>{noFlush=true;clearTimeout(saveT);const mm=q('pmm')&&q('pmm').checked;
+      try{if(mm){localStorage.clear();try{indexedDB.databases&&indexedDB.databases().then(l=>l.forEach(x=>x.name&&indexedDB.deleteDatabase(x.name)))}catch(_){}}
+        else{localStorage.removeItem(KEY);localStorage.removeItem(SAFEKEY);localStorage.removeItem(KEY+'-rescue')}}catch(e){}
+      setTimeout(()=>location.reload(),mm?300:0)}};
   setupBackup();
   q('pback').onclick=()=>{view='today';render();scrollTo({top:0})};
 }
@@ -3473,6 +3504,16 @@ setInterval(()=>{if(document.visibilityState!=='visible')return;
 checkLimit();
 
 offerRescue();autoSafe();
+{const m=document.getElementById('modal');let lastF=null;
+ const sync=()=>{if(!m.hidden){if(m.getAttribute('role')!=='dialog'){m.setAttribute('role','dialog');m.setAttribute('aria-modal','true')}
+  if(!m.contains(document.activeElement)){lastF=document.activeElement;const f=m.querySelector('button,input,[tabindex]');if(f)f.focus()}}
+  else if(lastF){try{lastF.focus()}catch(e){}lastF=null}};
+ new MutationObserver(sync).observe(m,{attributes:true,attributeFilter:['hidden']});
+ m.addEventListener('keydown',e=>{if(e.key==='Escape'){try{closeModal()}catch(_){}return}
+  if(e.key!=='Tab')return;const f=[...m.querySelectorAll('button,input,select,textarea,[tabindex]')].filter(x=>!x.disabled);if(!f.length)return;
+  const a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}});
+ const dg=document.getElementById('dog');if(dg){dg.setAttribute('tabindex','0');dg.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();dg.dispatchEvent(new MouseEvent('click'))}})}}
+setTimeout(()=>{try{if(S.pets.length&&S.backupNag!==today&&daysBetween(S.lastBackup||S.first||today,today)>=14){S.backupNag=today;save();toast('💾 It has been a while since the last backup. A grown-up can save one in the Parent corner so River\'s art and pets stay safe.')}}catch(e){}},4000);
 async function start(force){
   if(!S.set.feeds){all=[];if(view==='today')render();return}
   main.innerHTML='<div class="msg">Hot off the press… fetching today\'s pups!</div>';
