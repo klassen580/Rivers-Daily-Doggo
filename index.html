@@ -7,7 +7,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="River's Doggo"><meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#f3e9d2">
-<link rel="apple-touch-icon" href="images/icon.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+<meta name="description" content="A daily newspaper, puppy world and games starring a very good dog.">
+<meta property="og:title" content="River's Daily Doggo"><meta property="og:description" content="A daily newspaper, puppy world and games starring a very good dog."><meta property="og:image" content="https://klassen580.github.io/Rivers-Daily-Doggo/icons/icon-512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <script>
@@ -1904,7 +1908,9 @@ function backupHTML(){return`<h3 class="psec">Backup River's progress</h3>
   <p class="small">Last backup: <b>${S.lastBackup?fmt(S.lastBackup):'never'}</b>. A backup keeps River's pets, stickers, levels, scrapbook, letters and settings safe if Safari's data is cleared or you move to a new iPad.</p>
   <div class="rbtns left"><button id="bkDown">💾 Save backup file</button><label class="filebtn">📂 Restore from file<input type="file" id="bkFile" accept=".json,application/json"></label><button id="bkCode">📋 Copy backup code</button><button id="bkShare">📤 Share backup (full, with art)</button></div>
   <textarea id="bkText" rows="3" placeholder="A backup code appears here. Or paste a code here to restore it."></textarea>
-  <div class="rbtns left"><button id="bkPaste">Restore from code</button></div><p class="err" id="bkMsg"></p>`}
+  <div class="rbtns left"><button id="bkPaste">Restore from code</button></div><p class="err" id="bkMsg"></p>
+  <h3 class="psec">Share Daily Doggo</h3><p class="small">Send the link to family and friends. On iPhone or iPad they open it in Safari, tap Share, then Add to Home Screen. Each copy keeps its own progress on its own device.</p>
+  <div class="rbtns left"><button id="appShare">📤 Share the app</button></div>`}
 function setupBackup(){const q=id=>document.getElementById(id),msg=t=>q('bkMsg').textContent=t;
   const data=lite=>{const o=JSON.parse(JSON.stringify(S));if(lite){(o.letters||[]).forEach(l=>l.img='');o.stkImg={};o.items=[];o.day='';o.gallery=(o.gallery||[]).filter(g=>g.type==='colour');o.designs={};o.album=[]}return o};
   const cleanBackup=d0=>{if(!d0||typeof d0!=='object'||Array.isArray(d0))return null;
@@ -1937,6 +1943,9 @@ function setupBackup(){const q=id=>document.getElementById(id),msg=t=>q('bkMsg')
   q('bkShare').onclick=async()=>{const json=JSON.stringify({app:'rivers-daily-doggo',v:1,saved:today,data:data(false)}),name=`rivers-daily-doggo-backup-${today}.json`;
     try{const f=new File([json],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:"River's Daily Doggo backup"});S.lastBackup=today;save();msg('Backup shared!');return}}catch(e){if(e&&e.name==='AbortError')return}
     q('bkDown').click()};
+  q('appShare').onclick=async()=>{const url=location.href.split(/[?#]/)[0],text="River's Daily Doggo: a daily newspaper, puppy world and games. Open the link, then add it to your home screen.";
+    try{if(navigator.share){await navigator.share({title:"River's Daily Doggo",text,url});return}}catch(e){if(e&&e.name==='AbortError')return}
+    try{await navigator.clipboard.writeText(url);msg('Link copied! Paste it in a message.')}catch(e){q('bkText').value=url;q('bkText').select();msg('Copy the link above.')}};
   q('bkCode').onclick=async()=>{const code='RDD1.'+btoa(unescape(encodeURIComponent(JSON.stringify(data(true)))));q('bkText').value=code;S.lastBackup=today;save();
     try{await navigator.clipboard.writeText(code);msg('Backup code copied! Paste it somewhere safe, like Notes or an email to yourself.')}
     catch(e){q('bkText').select();msg('Select the code above and copy it somewhere safe.')}};
@@ -3524,5 +3533,6 @@ start(false);
 
 })();
 </script>
+<script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>
 </body>
 </html>
